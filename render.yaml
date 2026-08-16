@@ -35,12 +35,6 @@ services:
       - key: PYTHON_VERSION
         value: "3.11"
       - key: TASK1_BASE
-        fromService:
-          name: task1-search
-          type: web
-          property: url
+        value: "https://task1-search.onrender.com"
       - key: TASK2_BASE
-        fromService:
-          name: task2-cluster
-          type: web
-          property: url
+        value: "https://task2-cluster.onrender.com"
