@@ -212,6 +212,18 @@ clearBtn.addEventListener("click", () => { textInput.value = ""; resultPanel.cla
 
 const CAT_COLORS = { Economics: "#22d3c9", Entertainment: "#f5a524", Politics: "#a78bfa" };
 
+function showToast(msg) {
+  const toast = document.createElement("div");
+  toast.className = "toast-popup";
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add("show"), 10);
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
 async function classify() {
   const text = textInput.value.trim();
   const loader = document.getElementById("classify-loader");
@@ -227,13 +239,19 @@ async function classify() {
   
   try {
     const res = await fetch(`${T2}/api/classify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     
     loader.classList.add("hidden");
-    resultPanel.classList.remove("hidden");
     
-    if (!res.ok) throw new Error(data.error || "Classification failed.");
+    if (!res.ok) {
+      if (res.status === 400 && data.error) {
+        showToast(data.error);
+        return; // do not show error inside the panel
+      }
+      throw new Error(data.error || "Classification failed.");
+    }
 
+    resultPanel.classList.remove("hidden");
     textInput.rows = 4;
     resultPanel.innerHTML = `
       <div class="result-category ${data.predicted_category}">${data.predicted_category}</div>`;
