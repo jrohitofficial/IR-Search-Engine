@@ -17,7 +17,7 @@ services:
     name: task2-cluster
     env: python
     plan: free
-    buildCommand: "pip install -r task2_document_clustering/backend/requirements.txt"
+    buildCommand: "pip install -r task2_document_clustering/backend/requirements.txt && cd task2_document_clustering && python scripts/train_model.py"
     startCommand: "cd task2_document_clustering/backend && python run.py"
     envVars:
       - key: PYTHON_VERSION
