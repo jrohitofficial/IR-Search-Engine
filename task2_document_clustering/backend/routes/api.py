@@ -28,6 +28,8 @@ def classify_document():
         result = classify(text)
     except FileNotFoundError:
         return jsonify({"error": "Model has not been trained yet. Run scripts/train_model.py first."}), 503
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
 
     prediction_id = save_prediction({
         "input_text": text,

@@ -150,6 +150,10 @@ def classify(text: str) -> dict:
 
     cleaned = preprocess(text)
     vector = vectorizer.transform([cleaned])
+    
+    if vector.nnz == 0:
+        raise ValueError("Not related to Economics, Politics, or Entertainment (contains no known vocabulary).")
+        
     distances = kmeans.transform(vector)[0]  # distance to each of the 3 centroids
     cluster_id = int(np.argmin(distances))
     category = cluster_to_category[cluster_id]
