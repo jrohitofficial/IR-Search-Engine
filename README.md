@@ -249,3 +249,14 @@ The unified frontend serves a combined UI at `http://localhost:5003`. It require
   is allow-listed in Atlas's Network Access settings.
 - **Task 2 `/api/classify` returns 503** — the model hasn't been trained yet; run
   `scripts/train_model.py`.
+
+## Github Links
+'https://github.com/jrohitofficial/IR-Search-Engine.git'
+
+
+## Deployment Links
+(http://www.onespotsearch.linkpc.net/)
+OR
+(http://unified-frontend-6qge.onrender.com/)
+
+## Video Link
