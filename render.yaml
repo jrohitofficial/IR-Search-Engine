@@ -38,9 +38,9 @@ services:
         fromService:
           name: task1-search
           type: web
-          property: hostport
+          property: url
       - key: TASK2_BASE
         fromService:
           name: task2-cluster
           type: web
-          property: hostport
+          property: url
