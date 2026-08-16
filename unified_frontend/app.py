@@ -7,6 +7,7 @@ storage) still lives in the two independent Flask backends
 (task1_vertical_search/backend on :5001, task2_document_clustering/backend
 on :5002); this app calls their REST APIs from the browser.
 """
+import os
 from flask import Flask, render_template
 
 app = Flask(__name__)
@@ -14,8 +15,11 @@ app = Flask(__name__)
 
 @app.get("/")
 def index():
-    return render_template("index.html")
+    task1_url = os.environ.get("TASK1_BASE", "http://localhost:5001")
+    task2_url = os.environ.get("TASK2_BASE", "http://localhost:5002")
+    return render_template("index.html", task1_url=task1_url, task2_url=task2_url)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5003, debug=False, use_reloader=False)
+    port = int(os.environ.get("PORT", 5003))
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)

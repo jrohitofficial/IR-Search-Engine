@@ -6,6 +6,7 @@ Usage:
     python run.py --crawl    # run a single crawl synchronously then exit
 """
 import sys
+import os
 
 from app import create_app
 from config.settings import settings
@@ -28,7 +29,8 @@ def main():
 
     app = create_app()
     start_scheduler()
-    app.run(host="0.0.0.0", port=settings.TASK1_PORT, debug=False, use_reloader=False)
+    port = int(os.environ.get("PORT", settings.TASK1_PORT))
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
 
 
 if __name__ == "__main__":

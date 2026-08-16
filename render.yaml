@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: task1-search
+    env: python
+    buildCommand: "pip install -r task1_vertical_search/backend/requirements.txt"
+    startCommand: "cd task1_vertical_search/backend && python run.py"
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: RUN_CRAWL_ON_STARTUP
+        value: "false"
+
+  - type: web
+    name: task2-cluster
+    env: python
+    buildCommand: "pip install -r task2_document_clustering/backend/requirements.txt"
+    startCommand: "cd task2_document_clustering/backend && python run.py"
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+
+  - type: web
+    name: unified-frontend
+    env: python
+    buildCommand: "pip install -r unified_frontend/requirements.txt"
+    startCommand: "cd unified_frontend && python app.py"
+    envVars:
+      - key: TASK1_BASE
+        fromService:
+          name: task1-search
+          type: web
+          property: hostport
+      - key: TASK2_BASE
+        fromService:
+          name: task2-cluster
+          type: web
+          property: hostport

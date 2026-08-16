@@ -208,8 +208,8 @@
   </footer>
 
   <script>
-    window.TASK1_BASE = "http://localhost:5001";
-    window.TASK2_BASE = "http://localhost:5002";
+    window.TASK1_BASE = "{{ task1_url }}";
+    window.TASK2_BASE = "{{ task2_url }}";
   </script>
   <script src="{{ url_for('static', filename='js/app.js') }}?v=17"></script>
 </body>
