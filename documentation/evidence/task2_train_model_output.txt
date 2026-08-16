@@ -1,0 +1,57 @@
+﻿Loaded 540 documents from MongoDB for training.
+2026-08-15 10:31:27 INFO task2.clustering: TF-IDF matrix for clustering: 540 documents x 6072 terms.
+2026-08-15 10:31:30 INFO task2.clustering: Model trained and persisted. Cluster mapping: {0: 'Politics', 1: 'Economics', 2: 'Entertainment'}
+2026-08-15 10:31:30 INFO task2.clustering: Evaluation: {'n_documents': 540, 'n_terms': 6072, 'k': 3, 'inertia': 495.2051213529242, 'silhouette_score': 0.01954757988145797, 'cluster_distribution': {0: 110, 1: 262, 2: 168}, 'accuracy': 0.8444444444444444, 'precision_macro': 0.8924179086392826, 'recall_macro': 0.8444444444444444, 'f1_macro': 0.842781851909641}
+2026-08-15 10:31:33 INFO task2.visualization: Cluster visualisation saved to C:\Users\jrohi\OneDrive\Desktop\My INFORETRIVAL_ASSIGNMENT_Claude\IR_COURSEWORK\documentation\figures\figure_task2_kmeans_clusters.png
+
+=== Cluster -> Category mapping ===
+{
+  "0": "Politics",
+  "1": "Economics",
+  "2": "Entertainment"
+}
+
+=== Evaluation ===
+{
+  "n_documents": 540,
+  "n_terms": 6072,
+  "k": 3,
+  "inertia": 495.2051213529242,
+  "silhouette_score": 0.01954757988145797,
+  "cluster_distribution": {
+    "0": 110,
+    "1": 262,
+    "2": 168
+  },
+  "confusion_matrix": {
+    "labels": [
+      "Economics",
+      "Entertainment",
+      "Politics"
+    ],
+    "matrix": [
+      [
+        179,
+        1,
+        0
+      ],
+      [
+        13,
+        167,
+        0
+      ],
+      [
+        70,
+        0,
+        110
+      ]
+    ]
+  },
+  "accuracy": 0.8444444444444444,
+  "precision_macro": 0.8924179086392826,
+  "recall_macro": 0.8444444444444444,
+  "f1_macro": 0.842781851909641
+}
+
+Visualisation saved to: C:\Users\jrohi\OneDrive\Desktop\My INFORETRIVAL_ASSIGNMENT_Claude\IR_COURSEWORK\documentation\figures\figure_task2_kmeans_clusters.png
+Model artifacts saved to: C:\Users\jrohi\OneDrive\Desktop\My INFORETRIVAL_ASSIGNMENT_Claude\IR_COURSEWORK\task2_document_clustering\backend\models_artifacts

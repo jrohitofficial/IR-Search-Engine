@@ -1,0 +1,12 @@
+Flask==3.0.3
+Flask-Cors==4.0.1
+requests==2.32.3
+beautifulsoup4==4.12.3
+lxml==5.2.2
+pymongo==4.8.0
+dnspython==2.6.1
+scikit-learn==1.5.1
+numpy==1.26.4
+APScheduler==3.10.4
+python-dotenv==1.0.1
+pytest==8.3.2

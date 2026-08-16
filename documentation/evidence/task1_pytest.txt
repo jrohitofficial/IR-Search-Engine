@@ -1,0 +1,37 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\jrohi\OneDrive\Desktop\My INFORETRIVAL_ASSIGNMENT_Claude\IR_COURSEWORK\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\jrohi\OneDrive\Desktop\My INFORETRIVAL_ASSIGNMENT_Claude\IR_COURSEWORK\task1_vertical_search\backend
+collecting ... collected 29 items
+
+tests/test_api.py::test_search_requires_query_param PASSED               [  3%]
+tests/test_api.py::test_search_returns_top_k_page_size PASSED            [  6%]
+tests/test_api.py::test_search_nonsense_query_returns_empty_results_not_error PASSED [ 10%]
+tests/test_api.py::test_search_result_shape_includes_required_fields PASSED [ 13%]
+tests/test_api.py::test_research_output_invalid_id_returns_400 PASSED    [ 17%]
+tests/test_api.py::test_research_output_missing_id_returns_404 PASSED    [ 20%]
+tests/test_api.py::test_crawler_status_endpoint_shape PASSED             [ 24%]
+tests/test_database.py::test_upsert_by_url_prevents_duplicates PASSED    [ 27%]
+tests/test_database.py::test_mongodb_connection_is_reachable PASSED      [ 31%]
+tests/test_parsers.py::test_extract_links_finds_publications_and_persons PASSED [ 34%]
+tests/test_parsers.py::test_parse_publication_detail_extracts_required_fields PASSED [ 37%]
+tests/test_parsers.py::test_parse_profile_detail_extracts_required_fields PASSED [ 41%]
+tests/test_preprocessing.py::test_lowercases_and_removes_punctuation PASSED [ 44%]
+tests/test_preprocessing.py::test_removes_stopwords PASSED               [ 48%]
+tests/test_preprocessing.py::test_empty_input_returns_empty_string PASSED [ 51%]
+tests/test_preprocessing.py::test_same_pipeline_applies_to_query_and_document_text PASSED [ 55%]
+tests/test_robots.py::test_seed_organisation_page_is_allowed PASSED      [ 58%]
+tests/test_robots.py::test_publication_and_person_pages_are_allowed PASSED [ 62%]
+tests/test_robots.py::test_rss_export_query_formats_are_disallowed PASSED [ 65%]
+tests/test_robots.py::test_crawl_delay_is_five_seconds PASSED            [ 68%]
+tests/test_scheduler.py::test_scheduler_job_interval_matches_configured_weeks PASSED [ 72%]
+tests/test_scheduler.py::test_scheduler_status_reports_running_state PASSED [ 75%]
+tests/test_vector_space_model.py::test_index_builds_from_available_documents PASSED [ 79%]
+tests/test_vector_space_model.py::test_keyword_search_ranks_relevant_document_first PASSED [ 82%]
+tests/test_vector_space_model.py::test_author_name_search_returns_matching_publication PASSED [ 86%]
+tests/test_vector_space_model.py::test_results_sorted_descending_by_cosine_similarity PASSED [ 89%]
+tests/test_vector_space_model.py::test_no_match_returns_empty_results PASSED [ 93%]
+tests/test_vector_space_model.py::test_empty_query_returns_empty_results PASSED [ 96%]
+tests/test_vector_space_model.py::test_pagination_respects_top_k_limit PASSED [100%]
+
+============================= 29 passed in 18.49s =============================

@@ -1,0 +1,22 @@
+﻿2026-08-15 10:29:22 INFO task1.ranking: TF-IDF index built: 35 documents, 2154 vocabulary terms.
+2026-08-15 10:29:22 INFO task1.app: Flask app created. Search index initialised with 35 documents.
+2026-08-15 10:29:22 INFO task1.database: MongoDB indexes ensured.
+2026-08-15 10:29:23 INFO task1.ranking: TF-IDF index built: 35 documents, 2154 vocabulary terms.
+2026-08-15 10:29:23 INFO task1.app: Flask app created. Search index initialised with 35 documents.
+2026-08-15 10:29:23 INFO apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-08-15 10:29:23 INFO apscheduler.scheduler: Added job "Recurring pureportal crawl (Centre for Healthcare and Community Transformation)" to job store "default"
+2026-08-15 10:29:23 INFO apscheduler.scheduler: Scheduler started
+2026-08-15 10:29:23 INFO task1.scheduler: Scheduler started. Job 'pureportal_crawl_job' scheduled to run every 1.0 week(s).
+2026-08-15 10:29:23 INFO apscheduler.scheduler: Scheduler has been shut down
+2026-08-15 10:29:23 INFO apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-08-15 10:29:23 INFO apscheduler.scheduler: Added job "Recurring pureportal crawl (Centre for Healthcare and Community Transformation)" to job store "default"
+2026-08-15 10:29:23 INFO apscheduler.scheduler: Scheduler started
+2026-08-15 10:29:23 INFO task1.scheduler: Scheduler started. Job 'pureportal_crawl_job' scheduled to run every 1.0 week(s).
+2026-08-15 10:29:23 INFO apscheduler.scheduler: Scheduler has been shut down
+2026-08-15 10:29:23 INFO task1.ranking: TF-IDF index built: 3 documents, 25 vocabulary terms.
+2026-08-15 10:29:24 INFO task1.ranking: TF-IDF index built: 3 documents, 25 vocabulary terms.
+2026-08-15 10:29:24 INFO task1.ranking: TF-IDF index built: 3 documents, 25 vocabulary terms.
+2026-08-15 10:29:24 INFO task1.ranking: TF-IDF index built: 3 documents, 25 vocabulary terms.
+2026-08-15 10:29:24 INFO task1.ranking: TF-IDF index built: 3 documents, 25 vocabulary terms.
+2026-08-15 10:29:24 INFO task1.ranking: TF-IDF index built: 3 documents, 25 vocabulary terms.
+2026-08-15 10:29:24 INFO task1.ranking: TF-IDF index built: 15 documents, 4 vocabulary terms.

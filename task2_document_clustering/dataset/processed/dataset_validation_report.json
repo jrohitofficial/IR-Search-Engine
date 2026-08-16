@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-08-15T15:39:57.464213+00:00",
+  "rows": [
+    {
+      "category": "Economics",
+      "required": 150,
+      "available_in_source": 510,
+      "actual_selected": 180,
+      "status": "PASS"
+    },
+    {
+      "category": "Entertainment",
+      "required": 150,
+      "available_in_source": 386,
+      "actual_selected": 180,
+      "status": "PASS"
+    },
+    {
+      "category": "Politics",
+      "required": 150,
+      "available_in_source": 417,
+      "actual_selected": 180,
+      "status": "PASS"
+    },
+    {
+      "category": "TOTAL",
+      "required": 450,
+      "available_in_source": 1313,
+      "actual_selected": 540,
+      "status": "PASS"
+    }
+  ]
+}

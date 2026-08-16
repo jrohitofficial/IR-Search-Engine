@@ -1,0 +1,13 @@
+{
+  "_id": "6a7feeb8d55867ac217a7203",
+  "input_text": "Parliament debated the new immigration bill today.",
+  "predicted_category": "Economics",
+  "cluster_id": 1,
+  "distance_to_centroid": 1.016180690217581,
+  "distances_all_clusters": {
+    "Politics": 1.038475668687178,
+    "Economics": 1.016180690217581,
+    "Entertainment": 1.0316206785958058
+  },
+  "timestamp": "2026-08-15T04:44:40.283000"
+}

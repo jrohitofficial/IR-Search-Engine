@@ -1,0 +1,15 @@
+﻿2026-08-15 09:30:36 INFO task1.crawler: Crawl started. Seed: https://pureportal.coventry.ac.uk/en/organisations/centre-for-healthcare-and-community-transformation/
+2026-08-15 09:30:37 INFO task1.crawler: Seed page parsed: 3 publication links, 18 profile links discovered.
+2026-08-15 09:30:43 INFO task1.crawler: Publication inserted: A Cross-Sectional Study of Postgraduate Students' Mental Well-Being: E (https://pureportal.coventry.ac.uk/en/publications/a-cross-sectional-study-of-postgraduate-students-mental-well-bein/)
+2026-08-15 09:30:49 INFO task1.crawler: Profile inserted: Andy Turner (https://pureportal.coventry.ac.uk/en/persons/andy-turner/)
+2026-08-15 09:30:55 INFO task1.crawler: Publication inserted: A digital yoga-based 'Pause Grow Reflect' intervention for postgraduat (https://pureportal.coventry.ac.uk/en/publications/a-digital-yoga-based-pause-grow-reflect-intervention-for-postgrad/)
+2026-08-15 09:31:01 INFO task1.crawler: Profile inserted: Juliana Samson (https://pureportal.coventry.ac.uk/en/persons/juliana-samson-samson/)
+2026-08-15 09:31:07 INFO task1.crawler: Publication inserted: Age-and sex-specific percentile curves for the Test of Gross Motor Dev (https://pureportal.coventry.ac.uk/en/publications/age-and-sex-specific-percentile-curves-for-the-test-of-gross-moto/)
+2026-08-15 09:31:13 INFO task1.crawler: Profile inserted: Professor Deborah Lycett, PhD (https://pureportal.coventry.ac.uk/en/persons/deborah-lycett/)
+2026-08-15 09:31:18 INFO task1.crawler: Publication inserted: A novel digital intervention to support mental and sexual wellbeing af (https://pureportal.coventry.ac.uk/en/publications/a-novel-digital-intervention-to-support-mental-and-sexual-wellbei/)
+2026-08-15 09:31:24 INFO task1.crawler: Profile inserted: Nazia Afreen (https://pureportal.coventry.ac.uk/en/persons/nazia-afreen/)
+2026-08-15 09:31:35 INFO task1.crawler: Profile inserted: Sally Abbott (https://pureportal.coventry.ac.uk/en/persons/sally-abbott/)
+2026-08-15 09:31:48 INFO task1.crawler: Profile inserted: Professor for Nursing Practice Liz Deutsch (https://pureportal.coventry.ac.uk/en/persons/liz-lees-deutsch/)
+2026-08-15 09:31:54 INFO task1.crawler: Publication inserted: The Current Uses of Haptic-Enabled Extended Reality Technologies for D (https://pureportal.coventry.ac.uk/en/publications/the-current-uses-of-haptic-enabled-extended-reality-technologies-/)
+...
+2026-08-15 10:00:36 INFO task1.crawler: Crawl finished (max_crawl_seconds_reached). Publications: 35 inserted / 0 updated. Profiles: 35 inserted / 0 updated. Pages fetched: 268. Errors: 0.

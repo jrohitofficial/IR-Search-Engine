@@ -1,0 +1,11 @@
+﻿
+Dataset validation report
+Category         Required   Available  Selected  Status
+Economics             150         510       180    PASS
+Entertainment         150         386       180    PASS
+Politics              150         417       180    PASS
+TOTAL                 450        1313       540    PASS
+
+MongoDB: 0 inserted, 540 updated in 'clustering_documents'.
+CSV snapshot written to C:\Users\jrohi\OneDrive\Desktop\My INFORETRIVAL_ASSIGNMENT_Claude\IR_COURSEWORK\task2_document_clustering\dataset\processed\dataset.csv
+Validation report written to C:\Users\jrohi\OneDrive\Desktop\My INFORETRIVAL_ASSIGNMENT_Claude\IR_COURSEWORK\task2_document_clustering\dataset\processed\dataset_validation_report.json

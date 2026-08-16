@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OneSpot.AI | Vertical Search &amp; Document Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=15">
+</head>
+
+<body>
+
+  <div class="bg-fx" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="orb orb-c"></span>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none">
+            <path d="M20 3 L35 11 V29 L20 37 L5 29 V11 Z" stroke="url(#g1)" stroke-width="2" />
+            <circle cx="20" cy="20" r="6" fill="url(#g1)" />
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="40" y2="40">
+                <stop offset="0" stop-color="#7c5cff" />
+                <stop offset="1" stop-color="#22d3c9" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+        <div class="brand-text">
+          <strong>OneSpot.AI</strong>
+          <span>VSE &amp; DIS</span>
+        </div>
+      </div>
+
+      <nav class="tab-switch" role="tablist" aria-label="Application sections">
+        <button class="tab-btn active" data-tab="search" role="tab" aria-selected="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+            <path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          Research Search
+        </button>
+        <button class="tab-btn" data-tab="cluster" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="7" cy="7" r="3" stroke="currentColor" stroke-width="2" />
+            <circle cx="17" cy="8" r="3" stroke="currentColor" stroke-width="2" />
+            <circle cx="10" cy="17" r="3" stroke="currentColor" stroke-width="2" />
+          </svg>
+          Document Clustering
+        </button>
+        <span class="tab-indicator" id="tab-indicator"></span>
+      </nav>
+
+      <div class="status-cluster">
+        <span class="status-pill" id="status-task1"><i></i>Task 1</span>
+        <span class="status-pill" id="status-task2"><i></i>Task 2</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+  <div id="classify-loader" class="hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; backdrop-filter: blur(5px);">
+    <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <div style="color:#fff; margin-top: 20px; font-weight:700; font-size:1.1rem; letter-spacing: 1px;">Classifying...</div>
+  </div>
+  <style>
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+
+    <!-- ===================== TASK 1: SEARCH ===================== -->
+    <section class="panel active" id="panel-search">
+      <div id="search-center-wrapper" style="margin-top: 5vh; transition: margin-top 0.4s ease;">
+        <div class="hero glass">
+        <div class="hero-copy">
+          <span class="eyebrow">Vector Space Model · TF&#8209;IDF · Cosine Similarity</span>
+          <h1>OneSpot.AI Search Engine</h1>
+          <p>Query by topic or author name. Ranking is computed live from TF‑IDF vectors over the crawled
+            PurePortal corpus. Every similarity score shown is the actual cosine similarity, not a placeholder.</p>
+        </div>
+        <div style="position:relative; width:100%; max-width:720px; margin:0 auto;">
+          <form class="search-bar" id="search-form" style="margin:0; width:100%; max-width:100%;">
+            <svg class="search-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="search-input" name="q" placeholder="Type a researcher name or topic..."
+              autocomplete="off">
+            <button type="submit">Search</button>
+          </form>
+          <ul id="task1-suggestions" class="suggestions-dropdown hidden"></ul>
+        </div>
+        <div class="chip-row">
+          <span>Try:</span>
+          <button type="button" class="chip" data-q="mental health">mental health</button>
+          <button type="button" class="chip" data-q="digital health">digital health</button>
+          <button type="button" class="chip" data-q="Sally Abbott">Sally Abbott</button>
+          <button type="button" class="chip" data-q="Adeniyi Fagbamigbe">Adeniyi Fagbamigbe</button>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center; margin: 24px 0 12px;">
+        <button class="ghost-btn wow-btn" id="crawler-status-toggle" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; margin-right:8px; vertical-align: middle;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          Crawler &amp; Index Status
+        </button>
+      </div>
+      </div>
+
+      <div class="grid-2">
+        <div id="results-meta" class="results-meta hidden"></div>
+      </div>
+      <div id="crawler-status-panel" class="glass status-panel hidden" style="margin-bottom: 24px;"></div>
+
+      <div id="results" class="results"></div>
+      <nav id="pagination" class="pagination hidden"></nav>
+    </section>
+
+    <!-- ===================== TASK 2: CLUSTERING ===================== -->
+    <section class="panel" id="panel-cluster">
+      <div class="hero glass">
+        <div class="hero-copy">
+          <span class="eyebrow">TF&#8209;IDF · K‑Means (K=3) · Porter Stemming</span>
+          <h1>Classify a document into Economics, Entertainment or Politics</h1>
+          <p>Text is preprocessed, vectorised with the already‑fitted TF‑IDF model, and assigned to the
+            nearest of three trained K-Means centroids, and the model is never retrained on your input.</p>
+        </div>
+      </div>
+
+      <div class="grid-2 top-gap">
+        <div class="glass classify-card" style="position:relative;">
+          <label for="text-input">Document text</label>
+          <textarea id="text-input" rows="7"
+            placeholder="e.g. The central bank increased interest rates to control inflation." autocomplete="off"></textarea>
+          <ul id="task2-suggestions" class="suggestions-dropdown hidden" style="top: 140px;"></ul>
+          <div class="button-row">
+            <button id="classify-btn" class="primary-btn">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Classify
+            </button>
+            <button id="clear-btn" class="ghost-btn">Clear</button>
+          </div>
+          <div id="result-panel" class="result-panel hidden"></div>
+        </div>
+
+        <div class="glass stats-card">
+          <div class="stats-tabs">
+            <button class="stats-tab active" data-stats="dataset">Dataset</button>
+            <button class="stats-tab" data-stats="model">Model Evaluation</button>
+          </div>
+          <div id="dataset-stats" class="stats-body"></div>
+          <div id="model-stats" class="stats-body hidden"></div>
+        </div>
+      </div>
+
+      <div class="grid-2 top-gap history-figure-grid">
+        <div class="glass history-card">
+          <h2>Prediction History</h2>
+          <div id="history-list" class="history-list"></div>
+        </div>
+
+        <div class="glass figure-card" style="background:#0a0c16; border-color:#2a2d3e;">
+          <h2 style="color:#fff; font-size:1.1rem; font-weight:800; margin-bottom: 24px; text-align:center;">K-Means Cluster Visualisation (PCA 2D Projection)</h2>
+          <div style="border:1px solid #2a2d3e; border-radius:14px; background:#121420; padding:10px;">
+            <img id="cluster-figure" src="#" alt="Clusters" class="figure-img" style="border:none; border-radius:10px;" />
+          </div>
+          <div style="display:flex; justify-content:center; gap:24px; margin-top:20px; font-size:14px;">
+             <div style="display:flex; align-items:center; gap:8px;"><div style="width:10px;height:10px;border-radius:50%;background:var(--econ);"></div><span style="color:var(--muted);">📈 Economics</span></div>
+             <div style="display:flex; align-items:center; gap:8px;"><div style="width:10px;height:10px;border-radius:50%;background:var(--ent);"></div><span style="color:var(--muted);">🎬 Entertainment</span></div>
+             <div style="display:flex; align-items:center; gap:8px;"><div style="width:10px;height:10px;border-radius:50%;background:var(--pol);"></div><span style="color:var(--muted);">🏛️ Politics</span></div>
+          </div>
+          <p class="figure-caption" style="text-align:center; font-style:italic; margin-top:16px;">PCA 2D projection of news articles into three K-Means clusters (K=3). Each point represents one article. Cluster separation indicates category distinctiveness.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div style="display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 20px; box-sizing: border-box;">
+      <a href="https://linkedin.com/in/jrohitofficial" target="_blank" title="LinkedIn" style="color: var(--muted); display: flex; transition: all 0.2s ease;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+      </a>
+      
+      <div style="flex: 1; padding: 0 15px; position: relative; display: flex; align-items: center; justify-content: center; height: 30px; overflow: hidden;">
+        <marquee scrollamount="5" style="position: absolute; left: 0; width: 100%; font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; color: var(--accent); letter-spacing: 0.5px; z-index: 1;">This application was developed as a coursework assignment for the Information Retrieval module, MSc in Data Science &amp; Computational Intelligence, Coventry University.</marquee>
+        <div style="position: relative; z-index: 2; padding: 0 10px; background: var(--bg-0); box-shadow: 0 0 15px 15px var(--bg-0); border-radius: 10px;">
+          <span class="gradient-text" style="font-family: 'Dancing Script', cursive; font-size: 0.85rem; letter-spacing: 1px;">Developed By Rohit Jha Coventry University _ 11782276</span>
+        </div>
+      </div>
+      
+      <a href="https://github.com/jrohitofficial" target="_blank" title="GitHub" style="color: var(--muted); display: flex; transition: all 0.2s ease;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    window.TASK1_BASE = "http://localhost:5001";
+    window.TASK2_BASE = "http://localhost:5002";
+  </script>
+  <script src="{{ url_for('static', filename='js/app.js') }}?v=17"></script>
+</body>
+
+</html>

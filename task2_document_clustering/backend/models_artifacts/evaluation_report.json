@@ -1,0 +1,40 @@
+{
+  "n_documents": 540,
+  "n_terms": 6072,
+  "k": 3,
+  "inertia": 495.2051213529242,
+  "silhouette_score": 0.01954757988145797,
+  "cluster_distribution": {
+    "0": 110,
+    "1": 262,
+    "2": 168
+  },
+  "confusion_matrix": {
+    "labels": [
+      "Economics",
+      "Entertainment",
+      "Politics"
+    ],
+    "matrix": [
+      [
+        179,
+        1,
+        0
+      ],
+      [
+        13,
+        167,
+        0
+      ],
+      [
+        70,
+        0,
+        110
+      ]
+    ]
+  },
+  "accuracy": 0.8444444444444444,
+  "precision_macro": 0.8924179086392826,
+  "recall_macro": 0.8444444444444444,
+  "f1_macro": 0.842781851909641
+}
