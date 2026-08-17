@@ -29,8 +29,9 @@ def main():
     result = train(documents)
 
     true_categories = [d["category"] for d in documents]
+    titles = [d.get("title", "Untitled") for d in documents]
     plot_path = generate_cluster_plot(
-        result["X"], result["cluster_labels"], true_categories, result["cluster_to_category"]
+        result["X"], result["cluster_labels"], true_categories, result["cluster_to_category"], titles
     )
 
     print("\n=== Cluster -> Category mapping ===")

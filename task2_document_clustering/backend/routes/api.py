@@ -69,6 +69,14 @@ def model_evaluation():
     with open(settings.EVALUATION_REPORT_PATH, "r", encoding="utf-8") as f:
         return jsonify(json.load(f))
 
+@api_bp.get("/model/pca")
+def model_pca():
+    pca_path = settings.MODELS_DIR / "pca_data.json"
+    if not pca_path.exists():
+        return jsonify({"error": "PCA data not found. Run train_model.py."}), 404
+    with open(pca_path, "r", encoding="utf-8") as f:
+        return jsonify(json.load(f))
+
 
 @api_bp.get("/predictions/history")
 def predictions_history():

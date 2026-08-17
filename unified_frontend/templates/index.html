@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=15">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -174,7 +175,7 @@
         <div class="glass figure-card" style="background:#0a0c16; border-color:#2a2d3e;">
           <h2 style="color:#fff; font-size:1.1rem; font-weight:800; margin-bottom: 24px; text-align:center;">K-Means Cluster Visualisation (PCA 2D Projection)</h2>
           <div style="border:1px solid #2a2d3e; border-radius:14px; background:#121420; padding:10px;">
-            <img id="cluster-figure" src="#" alt="Clusters" class="figure-img" style="border:none; border-radius:10px;" />
+            <canvas id="clusterCanvas" height="180" style="width:100%;"></canvas>
           </div>
           <div style="display:flex; justify-content:center; gap:24px; margin-top:20px; font-size:14px;">
              <div style="display:flex; align-items:center; gap:8px;"><div style="width:10px;height:10px;border-radius:50%;background:var(--econ);"></div><span style="color:var(--muted);">📈 Economics</span></div>

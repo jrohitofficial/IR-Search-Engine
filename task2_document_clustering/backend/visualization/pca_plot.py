@@ -21,7 +21,8 @@ logger = logging.getLogger("task2.visualization")
 
 CATEGORY_COLORS = {"Economics": "#3b82f6", "Entertainment": "#a855f7", "Politics": "#10b981"}
 
-def generate_cluster_plot(X, cluster_labels, true_categories, cluster_to_category, out_path=None) -> str:
+import json
+def generate_cluster_plot(X, cluster_labels, true_categories, cluster_to_category, titles=None, out_path=None) -> str:
     out_path = out_path or (settings.FIGURES_DIR / "figure_task2_kmeans_clusters.png")
 
     pca = PCA(n_components=2, random_state=42)
@@ -49,6 +50,21 @@ def generate_cluster_plot(X, cluster_labels, true_categories, cluster_to_categor
     fig.tight_layout()
     fig.savefig(out_path, dpi=150, transparent=True)
     plt.close(fig)
+
+    # Save PCA coordinates to JSON for frontend interactive plotting
+    pca_data = []
+    titles = titles or ["Untitled"] * len(true_categories)
+    for i, category in enumerate(true_categories):
+        pca_data.append({
+            "x": float(coords[i, 0]),
+            "y": float(coords[i, 1]),
+            "category": category,
+            "title": titles[i]
+        })
+    json_path = settings.MODELS_DIR / "pca_data.json"
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(pca_data, f)
+    logger.info("PCA data saved to %s", json_path)
 
     logger.info("Cluster visualisation saved to %s", out_path)
     return str(out_path)

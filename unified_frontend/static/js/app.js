@@ -384,19 +384,58 @@ async function loadModelStats() {
   }
 }
 
-const clusterFig = document.getElementById("cluster-figure");
-if (clusterFig) {
-  clusterFig.onerror = function() {
-    this.style.display = 'none';
-    const msg = document.createElement('div');
-    msg.style.padding = '20px';
-    msg.style.textAlign = 'center';
-    msg.style.color = 'var(--muted)';
-    msg.innerText = 'Run scripts/train_model.py to generate this figure.';
-    this.parentNode.appendChild(msg);
-  };
-  clusterFig.src = `${T2}/figure`;
+async function loadPCAChart() {
+  const ctx = document.getElementById('clusterCanvas');
+  if (!ctx) return;
+  
+  try {
+    const res = await fetch(`${T2}/api/model/pca`);
+    if (!res.ok) throw new Error("Not trained");
+    const data = await res.json();
+    
+    const colors = { Economics: "rgba(34, 211, 201, 0.8)", Entertainment: "rgba(245, 165, 36, 0.8)", Politics: "rgba(167, 139, 250, 0.8)" };
+    const borders = { Economics: "#22d3c9", Entertainment: "#f5a524", Politics: "#a78bfa" };
+    
+    const datasets = ["Economics", "Entertainment", "Politics"].map(cat => {
+      return {
+        label: cat,
+        data: data.filter(d => d.category === cat).map(d => ({ x: d.x, y: d.y, title: d.title })),
+        backgroundColor: colors[cat],
+        borderColor: borders[cat],
+        borderWidth: 1,
+        pointRadius: 4,
+        pointHoverRadius: 7
+      };
+    });
+    
+    new Chart(ctx, {
+      type: 'scatter',
+      data: { datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.raw.title;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { color: "#2a2d3e" }, ticks: { display: false } },
+          y: { grid: { color: "#2a2d3e" }, ticks: { display: false } }
+        }
+      }
+    });
+  } catch (err) {
+    const container = ctx.parentNode;
+    container.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--muted);">Run scripts/train_model.py to generate PCA data.</div>`;
+  }
 }
+loadPCAChart();
 
 function truncate(text, n) { return text.length > n ? text.slice(0, n).trim() + "…" : text; }
 function escapeHtml(str) { const d = document.createElement("div"); d.textContent = str ?? ""; return d.innerHTML; }
