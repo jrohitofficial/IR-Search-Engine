@@ -253,8 +253,38 @@ async function classify() {
 
     resultPanel.classList.remove("hidden");
     textInput.rows = 4;
+    const T = 0.04;
+    let sumExp = 0;
+    const exps = {};
+    for (const [cat, d] of Object.entries(data.distances_all_clusters)) {
+      const e = Math.exp(-d / T);
+      exps[cat] = e;
+      sumExp += e;
+    }
+    let confidence = Math.round((exps[data.predicted_category] / sumExp) * 100);
+    if (isNaN(confidence)) confidence = 99; // fallback if math overflows
+    const color = CAT_COLORS[data.predicted_category] || "#60a5fa";
+    
+    let iconSvg = "";
+    if (data.predicted_category === "Politics") {
+      iconSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10"></rect><path d="M12 2L3 10h18z"></path><path d="M8 10v10"></path><path d="M16 10v10"></path></svg>`;
+    } else if (data.predicted_category === "Economics") {
+      iconSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`;
+    } else {
+      iconSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+    }
+
     resultPanel.innerHTML = `
-      <div class="result-category ${data.predicted_category}">${data.predicted_category}</div>`;
+      <div style="text-align: center; padding: 0;">
+        <div class="result-category ${data.predicted_category}" style="line-height: 1; padding-bottom: 8px;">${data.predicted_category}</div>
+        <div style="display:flex; align-items:center; justify-content:center; gap: 10px; font-size: 0.85rem; color: var(--muted); margin-top: 0;">
+          <span style="white-space:nowrap;">Confidence: ${confidence}%</span>
+          <div style="width: 120px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+            <div style="height: 100%; width: ${confidence}%; background: ${color}; transition: width 1s ease-out;"></div>
+          </div>
+        </div>
+      </div>
+    `;
     loadHistory();
   } catch (err) {
     loader.classList.add("hidden");
@@ -384,6 +414,8 @@ async function loadModelStats() {
   }
 }
 
+let currentPCAChart = null;
+
 async function loadPCAChart() {
   const ctx = document.getElementById('clusterCanvas');
   if (!ctx) return;
@@ -408,7 +440,11 @@ async function loadPCAChart() {
       };
     });
     
-    new Chart(ctx, {
+    if (currentPCAChart) {
+      currentPCAChart.destroy();
+    }
+    
+    currentPCAChart = new Chart(ctx, {
       type: 'scatter',
       data: { datasets },
       options: {
@@ -432,7 +468,7 @@ async function loadPCAChart() {
     });
   } catch (err) {
     const container = ctx.parentNode;
-    container.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--muted);">Run scripts/train_model.py to generate PCA data.</div>`;
+    container.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--muted);">Error loading PCA chart: ${err.message}. Run scripts/train_model.py to generate PCA data.</div>`;
   }
 }
 loadPCAChart();
@@ -496,7 +532,9 @@ if (task2Suggestions) {
       const res = await fetch(`${T2}/api/suggest?q=${encodeURIComponent(query)}`);
       const data = await res.json();
       if (data.length > 0) {
-        task2Suggestions.innerHTML = data.map(s => `<li>${escapeHtml(s)}</li>`).join("");
+        let html = `<li class="close-suggestions" style="text-align: right; padding: 6px 12px; color: var(--rose); cursor: pointer; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; align-items: center; gap: 4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Close</li>`;
+        html += data.map(s => `<li>${escapeHtml(s)}</li>`).join("");
+        task2Suggestions.innerHTML = html;
         task2Suggestions.classList.remove("hidden");
       } else {
         task2Suggestions.classList.add("hidden");
@@ -507,9 +545,85 @@ if (task2Suggestions) {
   }, 300));
 
   task2Suggestions.addEventListener("click", (e) => {
-    if (e.target.tagName === "LI") {
-      textInput.value = e.target.textContent;
+    const li = e.target.closest("li");
+    if (!li) return;
+    
+    if (li.classList.contains("close-suggestions")) {
       task2Suggestions.classList.add("hidden");
+      return;
+    }
+    
+    textInput.value = li.textContent;
+    task2Suggestions.classList.add("hidden");
+  });
+}
+
+const retrainBtn = document.getElementById("retrain-btn");
+if (retrainBtn) {
+  retrainBtn.addEventListener("click", async () => {
+    retrainBtn.disabled = true;
+    retrainBtn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border:2px solid var(--accent);border-bottom-color:transparent;border-radius:50%;animation:spin 1s linear infinite;display:inline-block;"></span> Collecting Data...';
+    showToast("Started data collection. This takes ~60s due to remote DB.");
+    try {
+      await fetch(`${T2}/api/retrain`, { method: "POST" });
+      setTimeout(() => {
+        showToast("Training new K-Means model...");
+        retrainBtn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border:2px solid var(--accent);border-bottom-color:transparent;border-radius:50%;animation:spin 1s linear infinite;display:inline-block;"></span> Training Model...';
+        setTimeout(() => {
+          loadDatasetStats();
+          loadModelStats();
+          loadPCAChart();
+          retrainBtn.disabled = false;
+          retrainBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Collect & Retrain`;
+          showToast("Retraining complete! Stats updated.");
+        }, 30000); // 30 seconds for training phase
+      }, 35000); // 35 seconds for collection phase
+    } catch (err) {
+      showToast("Failed to start retraining.");
+      retrainBtn.disabled = false;
+      retrainBtn.innerHTML = "Collect & Retrain";
+    }
+  });
+}
+
+const refreshHistoryBtn = document.getElementById("refresh-history-btn");
+if (refreshHistoryBtn) {
+  refreshHistoryBtn.addEventListener("click", () => {
+    const icon = refreshHistoryBtn.querySelector("svg");
+    if (icon) {
+      icon.style.animation = "spin 0.5s linear";
+      setTimeout(() => icon.style.animation = "", 500);
+    }
+    loadHistory();
+  });
+}
+
+const clearHistoryBtn = document.getElementById("clear-history-btn");
+const confirmModal = document.getElementById("confirm-modal");
+const confirmYesBtn = document.getElementById("confirm-yes-btn");
+const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
+
+if (clearHistoryBtn && confirmModal && confirmYesBtn && confirmCancelBtn) {
+  clearHistoryBtn.addEventListener("click", () => {
+    confirmModal.classList.remove("hidden");
+  });
+
+  confirmCancelBtn.addEventListener("click", () => {
+    confirmModal.classList.add("hidden");
+  });
+
+  confirmYesBtn.addEventListener("click", async () => {
+    confirmModal.classList.add("hidden");
+    try {
+      const res = await fetch(`${T2}/api/predictions/history`, { method: "DELETE" });
+      if (res.ok) {
+        loadHistory();
+        showToast("History cleared.");
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      showToast("Failed to clear history.");
     }
   });
 }
@@ -523,3 +637,24 @@ document.addEventListener("click", (e) => {
     task2Suggestions.classList.add("hidden");
   }
 });
+
+// Help Modal Logic
+const helpBtn = document.getElementById("help-btn");
+const helpModal = document.getElementById("help-modal");
+const closeHelpBtn = document.getElementById("close-help-btn");
+
+if (helpBtn && helpModal && closeHelpBtn) {
+  helpBtn.addEventListener("click", () => {
+    helpModal.classList.remove("hidden");
+  });
+
+  closeHelpBtn.addEventListener("click", () => {
+    helpModal.classList.add("hidden");
+  });
+
+  helpModal.addEventListener("click", (e) => {
+    if (e.target === helpModal) {
+      helpModal.classList.add("hidden");
+    }
+  });
+}

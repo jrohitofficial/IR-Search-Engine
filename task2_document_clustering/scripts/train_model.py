@@ -28,10 +28,13 @@ def main():
     print(f"Loaded {len(documents)} documents from MongoDB for training.")
     result = train(documents)
 
-    true_categories = [d["category"] for d in documents]
-    titles = [d.get("title", "Untitled") for d in documents]
+    # Pass the original texts and true labels to the visualisation
     plot_path = generate_cluster_plot(
-        result["X"], result["cluster_labels"], true_categories, result["cluster_to_category"], titles
+        X=result["X"],
+        cluster_labels=result["cluster_labels"],
+        true_categories=result["true_categories"],
+        cluster_to_category=result["cluster_to_category"],
+        titles=[d.get("title", "") for d in result["documents"]]
     )
 
     print("\n=== Cluster -> Category mapping ===")

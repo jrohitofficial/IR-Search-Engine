@@ -59,7 +59,7 @@ def train(documents: list[dict]) -> dict:
     contents = [preprocess(d["content"]) for d in documents]
     true_categories = [d["category"] for d in documents]
 
-    vectorizer = TfidfVectorizer(min_df=2, max_df=0.9)
+    vectorizer = TfidfVectorizer(min_df=2, max_df=0.9, max_features=290)
     X = vectorizer.fit_transform(contents)
     logger.info("TF-IDF matrix for clustering: %s documents x %s terms.", X.shape[0], X.shape[1])
 
@@ -87,6 +87,8 @@ def train(documents: list[dict]) -> dict:
         "cluster_labels": cluster_labels,
         "evaluation": report,
         "X": X,
+        "true_categories": true_categories,
+        "documents": documents
     }
 
 
@@ -154,7 +156,8 @@ def classify(text: str) -> dict:
     if vector.nnz == 0:
         raise ValueError("Not related to Economics, Politics, or Entertainment (contains no known vocabulary).")
         
-    distances = kmeans.transform(vector)[0]  # distance to each of the 3 centroids
+    distances = kmeans.transform(vector)[0]
+    
     cluster_id = int(np.argmin(distances))
     category = cluster_to_category[cluster_id]
 

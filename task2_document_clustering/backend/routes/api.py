@@ -94,6 +94,12 @@ def predictions_history():
         d["timestamp"] = ts.isoformat()
     return jsonify({"predictions": docs})
 
+
+@api_bp.delete("/predictions/history")
+def clear_predictions_history():
+    predictions_col().delete_many({})
+    return jsonify({"message": "History cleared successfully."})
+
 import re
 
 @api_bp.get("/suggest")
@@ -113,3 +119,26 @@ def suggest():
             suggestions.append(snippet)
             
     return jsonify(list(dict.fromkeys(suggestions)))
+
+@api_bp.post("/retrain")
+def retrain_model():
+    import subprocess
+    import sys
+    import threading
+    from config.settings import settings
+    
+    def run_scripts():
+        try:
+            logger.info("Starting dataset collection...")
+            subprocess.run([sys.executable, str(settings.BACKEND_DIR.parent / "scripts" / "build_dataset.py")], check=True)
+            logger.info("Starting model retraining...")
+            subprocess.run([sys.executable, str(settings.BACKEND_DIR.parent / "scripts" / "train_model.py")], check=True)
+            logger.info("Retraining complete.")
+        except Exception as e:
+            logger.error(f"Retrain pipeline failed: {e}")
+
+    thread = threading.Thread(target=run_scripts)
+    thread.daemon = True
+    thread.start()
+    
+    return jsonify({"message": "Retraining pipeline started in the background."})

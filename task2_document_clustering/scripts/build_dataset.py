@@ -88,6 +88,7 @@ def main():
     for category in settings.CATEGORIES:
         available = load_category_files(category)
         selected = select_top_n(available, settings.TARGET_DOCS_PER_CATEGORY)
+        
         all_selected.extend(selected)
 
         status = "PASS" if len(selected) >= settings.MIN_DOCS_PER_CATEGORY else "FAIL"
@@ -120,7 +121,9 @@ def main():
 
     # Persist to MongoDB (upsert by document_id so re-running is idempotent).
     inserted, updated = 0, 0
+    all_doc_ids = []
     for doc in all_selected:
+        all_doc_ids.append(doc["document_id"])
         result = documents_col().update_one(
             {"document_id": doc["document_id"]}, {"$set": doc}, upsert=True
         )
@@ -128,6 +131,10 @@ def main():
             inserted += 1
         else:
             updated += 1
+            
+    # Delete documents that are no longer in the dataset (e.g., cleared history items)
+    delete_result = documents_col().delete_many({"document_id": {"$nin": all_doc_ids}})
+    deleted = delete_result.deleted_count
 
     # Also write a local CSV/JSON snapshot for the processed dataset folder,
     # and a machine-readable validation report used by tests / documentation.

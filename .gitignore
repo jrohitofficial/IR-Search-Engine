@@ -128,5 +128,4 @@ task2_document_clustering/backend/models_artifacts/*.joblib
 task2_document_clustering/dataset/raw/bbc-fulltext.zip
 task2_document_clustering/dataset/raw/bbc/
 
-# Presentation files
-VIDEO_PRESENTATION_SCRIPT.md
+
