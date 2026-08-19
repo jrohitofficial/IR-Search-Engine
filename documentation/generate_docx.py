@@ -45,6 +45,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 SCREENSHOTS  = SCRIPT_DIR / "screenshots"
 FIGURES      = SCRIPT_DIR / "figures"
 EVIDENCE     = SCRIPT_DIR / "evidence"
+SNIPPETS     = SCREENSHOTS / "snippets"
 OUTPUT       = SCRIPT_DIR / "final_documentation.docx"
 
 # Load evaluation report for accurate metrics
@@ -58,7 +59,7 @@ else:
 # ---------------------------------------------------------------------------
 # Helper: image insert with max-width guard
 # ---------------------------------------------------------------------------
-def _img(doc, path, width=Inches(5.8), caption=None):
+def _img(doc, path, width=Inches(6.5), caption=None):
     """Insert an image centred, with optional caption."""
     p_path = Path(path)
     if not p_path.exists():
@@ -73,10 +74,12 @@ def _img(doc, path, width=Inches(5.8), caption=None):
         cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
 def _code_block(doc, text, font_size=Pt(8)):
-    """Insert a monospaced code block."""
+    """Insert a monospaced code block with LEFT alignment (not Justify)."""
     p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.LEFT
     p.paragraph_format.space_before = Pt(4)
     p.paragraph_format.space_after = Pt(4)
+    p.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
     run = p.add_run(text)
     run.font.name = "Consolas"
     run.font.size = font_size
@@ -362,7 +365,7 @@ def write_conceptual_architecture(doc):
     doc.add_heading("2.1 Task 1: Vertical Search Engine Pipeline", level=2)
     fn = _next_fig()
     _img(doc, FIGURES / "figure_01_task1_conceptual_architecture.png",
-         width=Inches(5.0),
+         width=Inches(6.5),
          caption=f"Figure {fn}. IR Architecture: Vertical Search Engine Pipeline.")
     doc.add_paragraph(
         "The vertical search engine pipeline begins at the PurePortal seed URL, where a "
@@ -376,7 +379,7 @@ def write_conceptual_architecture(doc):
     doc.add_heading("2.2 Task 2: Document Clustering Pipeline", level=2)
     fn = _next_fig()
     _img(doc, FIGURES / "figure_02_task2_conceptual_architecture.png",
-         width=Inches(5.0),
+         width=Inches(6.5),
          caption=f"Figure {fn}. Document Clustering Pipeline.")
     doc.add_paragraph(
         "The document clustering pipeline processes the BBC News dataset through comprehensive "
@@ -440,37 +443,20 @@ def write_crawler(doc):
     doc.add_paragraph(
         "The following code excerpt from robots_check.py demonstrates the robots.txt parser:"
     )
-    _code_block(doc,
-        'def is_allowed(url: str, user_agent: str) -> bool:\n'
-        '    rp = _get_parser(url)\n'
-        '    return rp.can_fetch(user_agent, url)\n'
-        '\n'
-        'def crawl_delay(url: str, user_agent: str, default_seconds: float) -> float:\n'
-        '    rp = _get_parser(url)\n'
-        '    delay = rp.crawl_delay(user_agent)\n'
-        '    if delay is None:\n'
-        '        return default_seconds\n'
-        '    return max(float(delay), default_seconds)'
-    )
+    fn = _next_fig()
+    _img(doc, SNIPPETS / "snippet_robots_check.png", width=Inches(6.5),
+         caption=f"Figure {fn}. robots_check.py — robots.txt compliance functions.")
 
     doc.add_paragraph(
         "Every request passes through the polite_get() function in http_client.py, which "
         "enforces the robots.txt check before any network call is made:"
     )
-    _code_block(doc,
-        'def polite_get(url: str, timeout: int = 15, max_retries: int = 3) -> str:\n'
-        '    if not is_allowed(url, settings.CRAWLER_USER_AGENT):\n'
-        '        raise RobotsDisallowed(f"robots.txt disallows crawling: {url}")\n'
-        '    host = urlparse(url).netloc\n'
-        '    delay = crawl_delay(url, settings.CRAWLER_USER_AGENT, settings.CRAWL_DELAY_SECONDS)\n'
-        '    last = _last_request_time.get(host, 0.0)\n'
-        '    wait = delay - (time.monotonic() - last)\n'
-        '    if wait > 0:\n'
-        '        time.sleep(wait)  # Enforce crawl-delay'
-    )
+    fn = _next_fig()
+    _img(doc, SNIPPETS / "snippet_polite_get.png", width=Inches(6.5),
+         caption=f"Figure {fn}. http_client.py — Polite HTTP client enforcing crawl-delay.")
 
     fn = _next_fig()
-    _img(doc, FIGURES / "term_task1_crawl.png", width=Inches(5.5),
+    _img(doc, FIGURES / "term_task1_crawl.png", width=Inches(6.5),
          caption=f"Figure {fn}. Terminal output of the crawler execution.")
 
     doc.add_heading("3.3 Automated Scheduling", level=2)
@@ -516,7 +502,7 @@ def write_database(doc):
     )
 
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "new_db_task1.png", width=Inches(5.5),
+    _img(doc, SCREENSHOTS / "new_db_task1.png", width=Inches(6.5),
          caption=f"Figure {fn}. MongoDB document from the research_outputs collection.")
 
     doc.add_heading("4.2 Task 2 Database: task2_clustering", level=2)
@@ -531,11 +517,11 @@ def write_database(doc):
     doc.add_paragraph(f"Table {tn}. Collections in the Task 2 database.", style="Caption")
 
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "new_db_task2.png", width=Inches(5.5),
+    _img(doc, SCREENSHOTS / "new_db_task2.png", width=Inches(6.5),
          caption=f"Figure {fn}. MongoDB document from the clustering_predictions collection.")
 
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "01_task1_crawler_status.png", width=Inches(5.0),
+    _img(doc, SCREENSHOTS / "01_task1_crawler_status.png", width=Inches(6.5),
          caption=f"Figure {fn}. Crawler & Index Status panel showing live database statistics.")
     doc.add_page_break()
 
@@ -579,15 +565,9 @@ def write_preprocessing(doc):
     )
 
     doc.add_paragraph("The following code excerpt shows the Task 2 preprocessing pipeline:")
-    _code_block(doc,
-        'def preprocess(text: str) -> str:\n'
-        '    text = clean_text(text)\n'
-        '    text = to_lowercase(text)\n'
-        '    tokens = tokenise(text)\n'
-        '    tokens = remove_stopwords(tokens)\n'
-        '    tokens = stem_tokens(tokens)\n'
-        '    return " ".join(tokens)'
-    )
+    fn = _next_fig()
+    _img(doc, SNIPPETS / "snippet_preprocessing.png", width=Inches(6.5),
+         caption=f"Figure {fn}. text_preprocessing.py — Full preprocessing pipeline with Porter Stemming.")
     doc.add_page_break()
 
 # ===========================================================================
@@ -618,18 +598,9 @@ def write_indexing(doc):
     )
 
     doc.add_paragraph("The following code excerpt shows the TF-IDF index construction:")
-    _code_block(doc,
-        'class VectorSpaceSearchEngine:\n'
-        '    def build_index(self) -> int:\n'
-        '        docs = list(research_outputs_col().find({}))\n'
-        '        corpus = [preprocess(d.get("content", "")) for d in docs]\n'
-        '        vectorizer = TfidfVectorizer()\n'
-        '        matrix = vectorizer.fit_transform(corpus)\n'
-        '        self._vectorizer = vectorizer\n'
-        '        self._doc_matrix = matrix\n'
-        '        self._documents = docs\n'
-        '        return len(docs)'
-    )
+    fn = _next_fig()
+    _img(doc, SNIPPETS / "snippet_build_index.png", width=Inches(6.5),
+         caption=f"Figure {fn}. vector_space_model.py — TF-IDF index construction.")
     doc.add_page_break()
 
 # ===========================================================================
@@ -653,15 +624,9 @@ def write_query_processor(doc):
     )
 
     doc.add_paragraph("The following code excerpt shows the search and ranking logic:")
-    _code_block(doc,
-        'def search(self, query: str, page: int = 1, limit: int = 10) -> dict:\n'
-        '    query_clean = preprocess(query)\n'
-        '    query_vector = self._vectorizer.transform([query_clean])\n'
-        '    similarities = cosine_similarity(query_vector, self._doc_matrix).flatten()\n'
-        '    ranked_indices = np.argsort(-similarities)\n'
-        '    ranked = [(idx, float(similarities[idx]))\n'
-        '              for idx in ranked_indices if similarities[idx] > 0.0]'
-    )
+    fn = _next_fig()
+    _img(doc, SNIPPETS / "snippet_search.png", width=Inches(6.5),
+         caption=f"Figure {fn}. vector_space_model.py — Cosine similarity search and ranking.")
 
     doc.add_heading("7.2 Pagination", level=2)
     doc.add_paragraph(
@@ -678,7 +643,7 @@ def write_query_processor(doc):
         "MongoDB, returning up to 10 matching suggestions to improve user experience."
     )
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "new_03_auto_suggestions.png", width=Inches(5.0),
+    _img(doc, SCREENSHOTS / "new_03_auto_suggestions.png", width=Inches(6.5),
          caption=f"Figure {fn}. Auto-suggestion feature showing matching profiles and titles.")
     doc.add_page_break()
 
@@ -696,7 +661,7 @@ def write_gui(doc):
 
     doc.add_heading("8.1 Task 1: Search Interface", level=2)
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "new_01_search_home.png", width=Inches(5.5),
+    _img(doc, SCREENSHOTS / "new_01_search_home.png", width=Inches(6.5),
          caption=f"Figure {fn}. Vertical Search Engine GUI home page.")
     doc.add_paragraph(
         "The interface provides a clean, prominent search bar with placeholder text and "
@@ -707,7 +672,7 @@ def write_gui(doc):
         "at the bottom of the screen allow users to navigate through large result sets."
     )
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "02_task1_search_mental_health.png", width=Inches(5.5),
+    _img(doc, SCREENSHOTS / "02_task1_search_mental_health.png", width=Inches(6.5),
          caption=f"Figure {fn}. Search results for 'mental health' displaying cosine similarity rankings.")
 
     doc.add_heading("8.2 Task 2: Clustering Interface", level=2)
@@ -717,7 +682,7 @@ def write_gui(doc):
         "chart, model evaluation metrics, and a PCA cluster visualisation."
     )
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "06_task2_classification_results.png", width=Inches(5.5),
+    _img(doc, SCREENSHOTS / "06_task2_classification_results.png", width=Inches(6.5),
          caption=f"Figure {fn}. Document classification GUI providing live predictions.")
     doc.add_page_break()
 
@@ -755,13 +720,9 @@ def write_classifier(doc):
     doc.add_paragraph(f"Table {tn}. Dataset validation report: 180 documents per category, balanced.", style="Caption")
 
     doc.add_paragraph("The following code excerpt shows the dataset selection logic:")
-    _code_block(doc,
-        'TARGET_DOCS_PER_CATEGORY = 180  # Exceeds minimum requirement of 150\n'
-        '\n'
-        'def select_top_n(docs: list[dict], n: int) -> list[dict]:\n'
-        '    """Prefer longer, information-richer documents."""\n'
-        '    return sorted(docs, key=lambda d: d["word_count"], reverse=True)[:n]'
-    )
+    fn = _next_fig()
+    _img(doc, SNIPPETS / "snippet_dataset.png", width=Inches(6.5),
+         caption=f"Figure {fn}. build_dataset.py — Top-N document selection (180 per category).")
 
     doc.add_heading("9.2 K-Means Clustering Model", level=2)
     doc.add_paragraph(
@@ -773,7 +734,7 @@ def write_classifier(doc):
         "voting against the ground-truth labels."
     )
     fn = _next_fig()
-    _img(doc, FIGURES / "term_task2_train_model.png", width=Inches(5.0),
+    _img(doc, FIGURES / "term_task2_train_model.png", width=Inches(6.5),
          caption=f"Figure {fn}. Terminal output during K-Means model training.")
 
     doc.add_heading("9.3 K-Means Cluster Visualisation (PCA)", level=2)
@@ -784,7 +745,7 @@ def write_classifier(doc):
         "form distinct, well-separated clusters in the projected space."
     )
     fn = _next_fig()
-    _img(doc, FIGURES / "figure_task2_kmeans_clusters.png", width=Inches(4.5),
+    _img(doc, FIGURES / "figure_task2_kmeans_clusters.png", width=Inches(6.5),
          caption=f"Figure {fn}. PCA 2D projection of the K-Means clusters.")
 
     doc.add_heading("9.4 Evaluation and Confusion Matrix", level=2)
@@ -848,7 +809,7 @@ def write_classifier(doc):
         "Softmax confidence scores."
     )
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "new_04_help_modal.png", width=Inches(5.0),
+    _img(doc, SCREENSHOTS / "new_04_help_modal.png", width=Inches(6.5),
          caption=f"Figure {fn}. Help Modal containing pre-engineered test phrases per category.")
 
     doc.add_paragraph(
@@ -857,7 +818,7 @@ def write_classifier(doc):
         "into the training pipeline, preserving model integrity."
     )
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "new_06_prediction_history.png", width=Inches(5.5),
+    _img(doc, SCREENSHOTS / "new_06_prediction_history.png", width=Inches(6.5),
          caption=f"Figure {fn}. Prediction History log displaying user inputs and classifications.")
     doc.add_page_break()
 
@@ -910,7 +871,7 @@ def write_discussion(doc):
         "predictions."
     )
     fn = _next_fig()
-    _img(doc, SCREENSHOTS / "new_05_data_bias.png", width=Inches(5.5),
+    _img(doc, SCREENSHOTS / "new_05_data_bias.png", width=Inches(6.5),
          caption=f"Figure {fn}. Demonstration of Data Bias: 'President' classified as Economics.")
 
     doc.add_heading("10.4 Limitations and Future Work", level=2)
@@ -1023,7 +984,7 @@ def write_appendices(doc):
         fpath = SCREENSHOTS / fname
         if fpath.exists():
             fn = _next_fig()
-            _img(doc, fpath, width=Inches(5.0),
+            _img(doc, fpath, width=Inches(6.5),
                  caption=f"Figure {fn}. {desc}")
 
     # C. Test Execution Evidence
@@ -1036,7 +997,7 @@ def write_appendices(doc):
         fpath = FIGURES / fname
         if fpath.exists():
             fn = _next_fig()
-            _img(doc, fpath, width=Inches(5.0),
+            _img(doc, fpath, width=Inches(6.5),
                  caption=f"Figure {fn}. {desc}")
     
     doc.add_page_break()
@@ -1050,61 +1011,69 @@ def write_appendices(doc):
         "and the unified frontend. All code is available in the GitHub repository linked above."
     )
     
+    def _insert_code_file(base_name, description):
+        """Insert a code file screenshot, handling multi-part splits."""
+        single = CODE_SCREENSHOTS_DIR / f"{base_name}.png"
+        if single.exists():
+            fn = _next_fig()
+            _img(doc, single, width=Inches(6.5), caption=f"Figure {fn}. {description}")
+            doc.add_page_break()
+            return
+        # Check for parts
+        part = 1
+        while True:
+            part_path = CODE_SCREENSHOTS_DIR / f"{base_name}_part{part}.png"
+            if not part_path.exists():
+                break
+            fn = _next_fig()
+            suffix = f" (Part {part})" if part > 1 or (CODE_SCREENSHOTS_DIR / f"{base_name}_part2.png").exists() else ""
+            _img(doc, part_path, width=Inches(6.5), caption=f"Figure {fn}. {description}{suffix}")
+            doc.add_page_break()
+            part += 1
+
     # Task 1 code screenshots
     doc.add_heading("D.1 Task 1: Vertical Search Engine", level=3)
-    task1_files = [
-        ("task1_run.png", "run.py — Application entry point"),
-        ("task1_config_settings.png", "config/settings.py — Configuration"),
-        ("task1_crawler_pure_crawler.png", "crawler/pure_crawler.py — Main BFS Crawler"),
-        ("task1_crawler_robots_check.png", "crawler/robots_check.py — robots.txt Compliance"),
-        ("task1_crawler_http_client.png", "crawler/http_client.py — Polite HTTP Client"),
-        ("task1_crawler_parsers.png", "crawler/parsers.py — HTML Parsers"),
-        ("task1_ranking_vsm.png", "ranking/vector_space_model.py — TF-IDF + Cosine Similarity"),
-        ("task1_utils_preprocessing.png", "utils/text_preprocessing.py — Text Preprocessing"),
-        ("task1_routes_api.png", "routes/api.py — REST API Endpoints"),
-        ("task1_database_mongo.png", "database/mongo_client.py — MongoDB Client"),
+    t1_files = [
+        ("task1_run", "run.py — Application Entry Point"),
+        ("task1_config_settings", "config/settings.py — Configuration"),
+        ("task1_crawler_pure_crawler", "crawler/pure_crawler.py — Main BFS Crawler"),
+        ("task1_crawler_robots_check", "crawler/robots_check.py — robots.txt Compliance"),
+        ("task1_crawler_http_client", "crawler/http_client.py — Polite HTTP Client"),
+        ("task1_crawler_parsers", "crawler/parsers.py — HTML Parsers"),
+        ("task1_ranking_vsm", "ranking/vector_space_model.py — TF-IDF + Cosine Similarity"),
+        ("task1_utils_preprocessing", "utils/text_preprocessing.py — Text Preprocessing"),
+        ("task1_routes_api", "routes/api.py — REST API Endpoints"),
+        ("task1_database_mongo", "database/mongo_client.py — MongoDB Client"),
     ]
-    for fname, desc in task1_files:
-        fpath = CODE_SCREENSHOTS_DIR / fname
-        if fpath.exists():
-            fn = _next_fig()
-            _img(doc, fpath, width=Inches(5.5), caption=f"Figure {fn}. {desc}")
-            doc.add_page_break()
+    for base, desc in t1_files:
+        _insert_code_file(base, desc)
     
     # Task 2 code screenshots
     doc.add_heading("D.2 Task 2: Document Clustering", level=3)
-    task2_files = [
-        ("task2_run.png", "run.py — Application entry point"),
-        ("task2_config_settings.png", "config/settings.py — Configuration"),
-        ("task2_clustering_kmeans.png", "clustering/kmeans_model.py — K-Means Model (Train + Classify)"),
-        ("task2_preprocessing.png", "preprocessing/text_preprocessing.py — Preprocessing with Stemming"),
-        ("task2_visualization_pca.png", "visualization/pca_plot.py — PCA 2D Cluster Visualisation"),
-        ("task2_routes_api.png", "routes/api.py — REST API Endpoints"),
-        ("task2_database_mongo.png", "database/mongo_client.py — MongoDB Client"),
-        ("task2_scripts_build_dataset.png", "scripts/build_dataset.py — Dataset Builder (180×3)"),
-        ("task2_scripts_train_model.png", "scripts/train_model.py — Model Training Script"),
+    t2_files = [
+        ("task2_run", "run.py — Application Entry Point"),
+        ("task2_config_settings", "config/settings.py — Configuration"),
+        ("task2_clustering_kmeans", "clustering/kmeans_model.py — K-Means Model"),
+        ("task2_preprocessing", "preprocessing/text_preprocessing.py — Preprocessing with Stemming"),
+        ("task2_visualization_pca", "visualization/pca_plot.py — PCA 2D Cluster Visualisation"),
+        ("task2_routes_api", "routes/api.py — REST API Endpoints"),
+        ("task2_database_mongo", "database/mongo_client.py — MongoDB Client"),
+        ("task2_scripts_build_dataset", "scripts/build_dataset.py — Dataset Builder (180×3)"),
+        ("task2_scripts_train_model", "scripts/train_model.py — Model Training Script"),
     ]
-    for fname, desc in task2_files:
-        fpath = CODE_SCREENSHOTS_DIR / fname
-        if fpath.exists():
-            fn = _next_fig()
-            _img(doc, fpath, width=Inches(5.5), caption=f"Figure {fn}. {desc}")
-            doc.add_page_break()
+    for base, desc in t2_files:
+        _insert_code_file(base, desc)
 
     # Frontend code screenshots
     doc.add_heading("D.3 Unified Frontend", level=3)
-    frontend_files = [
-        ("frontend_app.png", "app.py — Flask Frontend Server"),
-        ("frontend_html.png", "templates/index.html — HTML Template"),
-        ("frontend_js.png", "static/js/app.js — JavaScript Logic"),
-        ("frontend_css.png", "static/css/style.css — CSS Stylesheet"),
+    fe_files = [
+        ("frontend_app", "app.py — Flask Frontend Server"),
+        ("frontend_html", "templates/index.html — HTML Template"),
+        ("frontend_js", "static/js/app.js — JavaScript Logic"),
+        ("frontend_css", "static/css/style.css — CSS Stylesheet"),
     ]
-    for fname, desc in frontend_files:
-        fpath = CODE_SCREENSHOTS_DIR / fname
-        if fpath.exists():
-            fn = _next_fig()
-            _img(doc, fpath, width=Inches(5.5), caption=f"Figure {fn}. {desc}")
-            doc.add_page_break()
+    for base, desc in fe_files:
+        _insert_code_file(base, desc)
 
 # ===========================================================================
 # MAIN
