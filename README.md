@@ -260,3 +260,29 @@ OR
 (http://unified-frontend-6qge.onrender.com/)
 
 ## Video Link
+
+
+
+
+🏛️ Politics
+(Triggers: labour, party, election, blair, government, mp, tax, law)
+
+"The Labour party has announced a new election plan to increase public tax."
+"Prime Minister Tony Blair told the government to pass a new law."
+"The Tory MP gave a speech to the public about the upcoming election."
+
+
+📈 Economics
+(Triggers: bank, market, price, economic, growth, company, firm, shares, sales)
+
+"The central bank increased interest rates to control market prices and boost economic growth."
+"The company reported record sales and the firm's shares surged in the stock market."
+"Oil prices hit a new high this year, impacting business growth and company sales."
+
+
+🎬 Entertainment
+(Triggers: film, oscar, director, actor, band, song, tv, music, album)
+
+"The new film won the Oscar for best director and best actor."
+"The famous band performed their new song live on TV."
+"The music star released a new album that broke every record this year."
