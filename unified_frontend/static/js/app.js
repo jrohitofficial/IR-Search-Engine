@@ -93,10 +93,10 @@ async function fetchStatus(isInitial = false) {
         let finishedDate = data.last_crawl.finished_at ? new Date(data.last_crawl.finished_at).toLocaleString() : 'Unknown date';
         let remainingDaysText = '';
         if (data.scheduler && data.scheduler.jobs && data.scheduler.jobs.length > 0 && data.scheduler.jobs[0].next_run_time) {
-           let nextRun = new Date(data.scheduler.jobs[0].next_run_time);
-           let diffMs = nextRun - new Date();
-           let days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-           remainingDaysText = ` (Next auto-crawl in ${days} days)`;
+          let nextRun = new Date(data.scheduler.jobs[0].next_run_time);
+          let diffMs = nextRun - new Date();
+          let days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+          remainingDaysText = ` (Next auto-crawl in ${days} days)`;
         }
         lastCrawl = `<span style="color: var(--text); font-weight: 500;">Last Crawled: ${finishedDate}${remainingDaysText}</span>`;
       }
@@ -227,22 +227,22 @@ function showToast(msg) {
 async function classify() {
   const text = textInput.value.trim();
   const loader = document.getElementById("classify-loader");
-  
-  if (!text) { 
+
+  if (!text) {
     resultPanel.classList.remove("hidden");
-    resultPanel.innerHTML = '<p class="state-msg error">Please enter some text to classify.</p>'; 
-    return; 
+    resultPanel.innerHTML = '<p class="state-msg error">Please enter some text to classify.</p>';
+    return;
   }
-  
+
   loader.classList.remove("hidden");
   resultPanel.classList.add("hidden");
-  
+
   try {
     const res = await fetch(`${T2}/api/classify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
     const data = await res.json().catch(() => ({}));
-    
+
     loader.classList.add("hidden");
-    
+
     if (!res.ok) {
       if (res.status === 400 && data.error) {
         showToast(data.error);
@@ -264,7 +264,7 @@ async function classify() {
     let confidence = Math.round((exps[data.predicted_category] / sumExp) * 100);
     if (isNaN(confidence)) confidence = 99; // fallback if math overflows
     const color = CAT_COLORS[data.predicted_category] || "#60a5fa";
-    
+
     let iconSvg = "";
     if (data.predicted_category === "Politics") {
       iconSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10"></rect><path d="M12 2L3 10h18z"></path><path d="M8 10v10"></path><path d="M16 10v10"></path></svg>`;
@@ -326,28 +326,28 @@ async function loadDatasetStats() {
   try {
     const res = await fetch(`${T2}/api/dataset/stats`);
     const data = await res.json();
-    
+
     let currentAngle = 0;
     const radius = 60;
     const circumference = 2 * Math.PI * radius;
     const total = data.total;
-    
+
     const colors = { Economics: "var(--econ)", Entertainment: "var(--ent)", Politics: "var(--pol)" };
     const icons = { Economics: "📈", Entertainment: "🎬", Politics: "🏛️" };
-    
+
     let svg = `<div style="perspective: 800px; width:180px; height:180px; margin:0 auto;"><svg viewBox="0 0 160 160" style="width:100%; height:100%; display:block; filter: drop-shadow(0 25px 20px rgba(0,0,0,0.7)) drop-shadow(0 0 10px rgba(255,255,255,0.1)); transform: rotateX(25deg) rotateY(-15deg) scale(1.1); transform-style: preserve-3d; transition: transform 0.5s;">`;
     let legend = `<div style="display:flex; flex-direction:column; gap:12px;">`;
-    
+
     data.categories.forEach((c) => {
       const cat = c.category;
       const count = c.actual;
       const percent = count / total;
       const strokeDasharray = `${percent * circumference} ${circumference}`;
       const strokeDashoffset = - (currentAngle / 360) * circumference;
-      
+
       svg += `<circle r="${radius}" cx="80" cy="80" fill="transparent" stroke="${colors[cat]}" stroke-width="24" stroke-dasharray="${strokeDasharray}" stroke-dashoffset="${strokeDashoffset}" transform="rotate(-90 80 80)" style="transition: all 1s ease-out; stroke-linecap: round; filter: drop-shadow(inset 0 4px 4px rgba(255,255,255,0.5));" />`;
       currentAngle += percent * 360;
-      
+
       legend += `<div style="display:flex; align-items:center; gap:14px; font-size:14px;">
                    <div style="width:12px; height:12px; border-radius:50%; background:${colors[cat]}; box-shadow: 0 0 12px ${colors[cat]};"></div>
                    <div style="color:var(--muted); display:flex; align-items:center; gap:8px;">
@@ -357,12 +357,12 @@ async function loadDatasetStats() {
                    <div class="count-up" data-count="${count}" style="color:#fff; font-weight:800; font-size:15px; margin-left:auto;">0</div>
                  </div>`;
     });
-    
+
     svg += `<text x="80" y="75" class="count-up" data-count="${total}" text-anchor="middle" fill="#fff" font-size="28" font-weight="900" font-family="var(--font-sans)" style="transform: translateZ(20px); text-shadow: 0 5px 10px rgba(0,0,0,0.8);">0</text>
             <text x="80" y="98" text-anchor="middle" fill="var(--muted)" font-size="12" font-family="var(--font-sans)" style="transform: translateZ(20px);">documents</text>
            </svg></div>`;
     legend += `</div>`;
-    
+
     const html = `
       <div style="margin-bottom: 8px;">
         <h3 style="color:#fff; font-size:1.05rem; font-weight:800; margin-bottom: 16px; text-align:center;">Cluster Distribution</h3>
@@ -378,7 +378,7 @@ async function loadDatasetStats() {
       const target = parseInt(el.getAttribute('data-count'), 10);
       const duration = 1500;
       const startTime = performance.now();
-      
+
       function updateNumber(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
@@ -419,15 +419,15 @@ let currentPCAChart = null;
 async function loadPCAChart() {
   const ctx = document.getElementById('clusterCanvas');
   if (!ctx) return;
-  
+
   try {
     const res = await fetch(`${T2}/api/model/pca`);
     if (!res.ok) throw new Error("Not trained");
     const data = await res.json();
-    
+
     const colors = { Economics: "rgba(34, 211, 201, 0.8)", Entertainment: "rgba(245, 165, 36, 0.8)", Politics: "rgba(167, 139, 250, 0.8)" };
     const borders = { Economics: "#22d3c9", Entertainment: "#f5a524", Politics: "#a78bfa" };
-    
+
     const datasets = ["Economics", "Entertainment", "Politics"].map(cat => {
       return {
         label: cat,
@@ -439,11 +439,11 @@ async function loadPCAChart() {
         pointHoverRadius: 7
       };
     });
-    
+
     if (currentPCAChart) {
       currentPCAChart.destroy();
     }
-    
+
     currentPCAChart = new Chart(ctx, {
       type: 'scatter',
       data: { datasets },
@@ -454,7 +454,7 @@ async function loadPCAChart() {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: function(context) {
+              label: function (context) {
                 return context.raw.title;
               }
             }
@@ -483,7 +483,7 @@ loadModelStats();
 /* ===================== AUTO-SUGGEST ===================== */
 function debounce(func, wait) {
   let timeout;
-  return function(...args) {
+  return function (...args) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
@@ -547,12 +547,12 @@ if (task2Suggestions) {
   task2Suggestions.addEventListener("click", (e) => {
     const li = e.target.closest("li");
     if (!li) return;
-    
+
     if (li.classList.contains("close-suggestions")) {
       task2Suggestions.classList.add("hidden");
       return;
     }
-    
+
     textInput.value = li.textContent;
     task2Suggestions.classList.add("hidden");
   });
