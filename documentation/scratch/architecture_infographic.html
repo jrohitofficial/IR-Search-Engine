@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ST7071CEM System Architecture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --t1-main: #0b69b2;
+            --t1-light: #f0f7fd;
+            --t2-main: #1e873b;
+            --t2-light: #f1fcf4;
+            --shared-main: #4a5568;
+            --text-dark: #1a202c;
+            --text-light: #718096;
+            --bg-gray: #f7fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            /* Soft background so the white container pops */
+            color: var(--text-dark);
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .infographic-container {
+            width: 1400px;
+            /* Fixed width prevents shrinking/breaking on small screens */
+            background: #ffffff;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p span {
+            font-weight: 700;
+        }
+
+        .header p .divider {
+            color: #cbd5e0;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            /* Increased gap to comfortably fit side boxes */
+            margin-bottom: 0px;
+        }
+
+        .column {
+            border-radius: 12px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .col-t1 {
+            border: 2px solid #93c5fd;
+            background-color: #f8fafc;
+        }
+
+        .col-t2 {
+            border: 2px solid #86efac;
+            background-color: #f0fdf4;
+        }
+
+        .col-header {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 30px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 800;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .col-t1 .col-header {
+            background: var(--t1-main);
+        }
+
+        .col-t2 .col-header {
+            background: var(--t2-main);
+        }
+
+        .timeline {
+            margin-top: 30px;
+            position: relative;
+        }
+
+        /* The vertical dashed line for the timeline */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            bottom: 30px;
+            width: 2px;
+            border-left: 2px dashed #94a3b8;
+            z-index: 1;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-core {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .step-number {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-right: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 5;
+        }
+
+        .col-t1 .step-number {
+            background: var(--t1-main);
+        }
+
+        .col-t2 .step-number {
+            background: var(--t2-main);
+        }
+
+        .step-number.orange {
+            background: #ed8936;
+        }
+
+        .step-content {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px 20px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+            width: 100%;
+        }
+
+        .col-t1 .step-content {
+            border-left: 5px solid var(--t1-main);
+        }
+
+        .col-t2 .step-content {
+            border-left: 5px solid var(--t2-main);
+        }
+
+        .step-content.orange-border {
+            border-left: 5px solid #ed8936;
+        }
+
+        .step-icon {
+            font-size: 26px;
+            margin-right: 20px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .col-t1 .step-icon {
+            color: var(--t1-main);
+        }
+
+        .col-t2 .step-icon {
+            color: var(--t2-main);
+        }
+
+        .step-content.orange-border .step-icon {
+            color: #ed8936;
+        }
+
+        .step-text h3 {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .step-text p {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        /* Perfectly Aligned Side Boxes using Flexbox */
+        .side-box-container {
+            display: flex;
+            align-items: center;
+            margin-left: 0px;
+            z-index: 1;
+        }
+
+        .dash-line {
+            width: 30px;
+            height: 2px;
+            background-image: linear-gradient(to right, #ed8936 50%, transparent 50%);
+            background-size: 8px 2px;
+            background-repeat: repeat-x;
+            margin-left: -2px;
+            /* Pull it slightly left to overlap the main box border perfectly */
+        }
+
+        .side-box {
+            background: white;
+            border: 1px solid #fbd38d;
+            border-top: 4px solid #dd6b20;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+            width: 130px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .clusters-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            margin-left: 62px;
+        }
+
+        .cluster-box {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .cluster-box.econ {
+            border-top: 4px solid var(--t1-main);
+        }
+
+        .cluster-box.ent {
+            border-top: 4px solid #805ad5;
+        }
+
+        .cluster-box.pol {
+            border-top: 4px solid #e53e3e;
+        }
+
+        .cluster-box i {
+            font-size: 22px;
+        }
+
+        .cluster-box.econ i {
+            color: var(--t1-main);
+        }
+
+        .cluster-box.ent i {
+            color: #805ad5;
+        }
+
+        .cluster-box.pol i {
+            color: #e53e3e;
+        }
+
+        .cluster-text h4 {
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .cluster-text p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* WIRING FROM COLUMNS TO SHARED INFRASTRUCTURE */
+        .wiring-svg-container {
+            width: 100%;
+            height: 60px;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* CINEMATIC SHARED INFRASTRUCTURE */
+        .shared-infra {
+            margin: 0 auto;
+            max-width: 850px;
+            background: linear-gradient(145deg, #0f172a 0%, #1e1b4b 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 20px;
+            position: relative;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.2);
+            color: white;
+        }
+
+        .shared-header {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 10px 35px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .shared-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .shared-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .shared-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .shared-item i {
+            font-size: 38px;
+            color: #a78bfa;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(167, 139, 250, 0.6);
+        }
+
+        .shared-item .step-text h3 {
+            color: #f8fafc;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .shared-item .step-text p {
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="infographic-container">
+
+        <div class="header">
+            <h1>ST7071CEM – System Architecture & Workflow Pipeline</h1>
+            <p>
+                <span style="color: var(--t1-main)">Task 1: Vertical Search Engine</span>
+                <span class="divider">|</span>
+                <span style="color: var(--t2-main)">Task 2: News Document Clustering</span>
+            </p>
+        </div>
+
+        <div class="main-grid">
+
+            <!-- TASK 1 COLUMN -->
+            <div class="column col-t1">
+                <div class="col-header">TASK 1: VERTICAL SEARCH ENGINE</div>
+
+                <div class="timeline">
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <i class="fas fa-globe step-icon"></i>
+                                <div class="step-text">
+                                    <h3>Coventry PurePortal Seed URL</h3>
+                                    <p>pureportal.coventry.ac.uk/en/organisations/...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 with perfectly aligned side-box -->
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <i class="fas fa-robot step-icon"></i>
+                                <div class="step-text">
+                                    <h3>Requests + BeautifulSoup Crawler</h3>
+                                    <p>Extracts: Outputs • Profiles • Pagination</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="side-box-container">
+                            <div class="dash-line"></div>
+                            <div class="side-box">
+                                <i class="far fa-calendar-alt"
+                                    style="color:#dd6b20; font-size:18px; margin-bottom:5px;"></i><br>
+                                <strong>APScheduler</strong><br>
+                                Background Loop
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <i class="fas fa-filter step-icon"></i>
+                                <div class="step-text">
+                                    <h3>Data Extraction & Filtering</h3>
+                                    <p>Title • Authors • Date • URLs • Abstract</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <i class="fas fa-language step-icon"></i>
+                                <div class="step-text">
+                                    <h3>NLP Preprocessing Pipeline</h3>
+                                    <p>Lowercase • Tokenise • Stop-words • (No Stemming)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <i class="fas fa-square-root-alt step-icon"></i>
+                                <div class="step-text">
+                                    <h3>TF-IDF Vectorisation</h3>
+                                    <p>TF(t,d) × IDF(t) • L2-Normalised Vectors</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">6</div>
+                            <div class="step-content">
+                                <i class="fas fa-database step-icon"></i>
+                                <div class="step-text">
+                                    <h3>MongoDB – Vertical Search Engine</h3>
+                                    <p>doc_vectors • term_index • crawl_log</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number orange">7</div>
+                            <div class="step-content orange-border">
+                                <i class="fas fa-search step-icon"></i>
+                                <div class="step-text">
+                                    <h3>User Search Query</h3>
+                                    <p>Raw text → Preprocessed → Query Vector</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">8</div>
+                            <div class="step-content">
+                                <i class="fas fa-chart-bar step-icon"></i>
+                                <div class="step-text">
+                                    <h3>Cosine Similarity Ranking</h3>
+                                    <p>cos(θ) = (Q·D) / (||Q|| × ||D||) • Top-K Sorting</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">9</div>
+                            <div class="step-content">
+                                <i class="fas fa-desktop step-icon"></i>
+                                <div class="step-text">
+                                    <h3>Vertical Search Engine UI</h3>
+                                    <p>Clickable Titles • Profiles • Relevance Scores</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TASK 2 COLUMN -->
+            <div class="column col-t2">
+                <div class="col-header">TASK 2: NEWS DOCUMENT CLUSTERING</div>
+
+                <div class="timeline">
+
+                    <!-- Step 1 with perfectly aligned side-box -->
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <i class="fas fa-file-csv step-icon"></i>
+                                <div class="step-text">
+                                    <h3>BBC News Dataset</h3>
+                                    <p>Economics • Entertainment • Politics (CSV)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="side-box-container">
+                            <div class="dash-line" style="border-color: #ecc94b;"></div>
+                            <div class="side-box" style="border-color: #ecc94b; border-top-color: #d69e2e;">
+                                <i class="far fa-file-alt"
+                                    style="color:#d69e2e; font-size:18px; margin-bottom:5px;"></i><br>
+                                <strong>Dataset Size</strong><br>
+                                540 Real Documents Total
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <i class="fas fa-download step-icon"></i>
+                                <div class="step-text">
+                                    <h3>Data Loader (Pandas Ingestion)</h3>
+                                    <p>Title • Content • Labels • Feature Construction</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <i class="fas fa-broom step-icon"></i>
+                                <div class="step-text">
+                                    <h3>Data Cleaning & Validation</h3>
+                                    <p>HTML Stripping • Duplicate Detection • NaN Checks</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <i class="fas fa-language step-icon"></i>
+                                <div class="step-text">
+                                    <h3>NLP Preprocessing Pipeline</h3>
+                                    <p>Lowercase • Punctuation • Tokenise • Porter Stemming</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <i class="fas fa-square-root-alt step-icon"></i>
+                                <div class="step-text">
+                                    <h3>TF-IDF Vectorisation</h3>
+                                    <p>Feature Extraction • Sparse Matrix Construction</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-row">
+                        <div class="step-core">
+                            <div class="step-number">6</div>
+                            <div class="step-content">
+                                <i class="fas fa-project-diagram step-icon"></i>
+                                <div class="step-text">
+                                    <h3>K-Means Clustering (K=3)</h3>
+                                    <p>k-means++ init • Centroid Optimisation • WCSS Minimisation</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Clusters Below Timeline -->
+                <div class="clusters-grid">
+                    <div class="cluster-box econ">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="cluster-text">
+                            <h4>Economics</h4>
+                            <p>Cluster 0</p>
+                        </div>
+                    </div>
+                    <div class="cluster-box ent">
+                        <i class="fas fa-film"></i>
+                        <div class="cluster-text">
+                            <h4>Entertainment</h4>
+                            <p>Cluster 1</p>
+                        </div>
+                    </div>
+                    <div class="cluster-box pol">
+                        <i class="fas fa-landmark"></i>
+                        <div class="cluster-text">
+                            <h4>Politics</h4>
+                            <p>Cluster 2</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Steps -->
+                <div style="margin-left:62px; margin-top:30px; display:flex; flex-direction:column; gap:25px;">
+                    <div class="step-content" style="border-left:5px solid var(--t2-main)">
+                        <i class="fas fa-project-diagram step-icon"></i>
+                        <div class="step-text">
+                            <h3>PCA Dimensionality Reduction</h3>
+                            <p>2D Scatter Plot Visualisation • Silhouette Scoring</p>
+                        </div>
+                    </div>
+
+                    <div class="step-content orange-border">
+                        <i class="fas fa-server step-icon"></i>
+                        <div class="step-text">
+                            <h3>User Text Classification (Live)</h3>
+                            <p>Preprocess → Vectorise → Nearest Centroid Mapping</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- PERFECT WIRING INTO SHARED INFRA -->
+        <div class="wiring-svg-container">
+            <!-- Exact SVG dimensions for a 1300px wide grid with a 60px gap -->
+            <!-- Center of left column is 310, Center of right column is 990, Center of grid is 650 -->
+            <svg width="1300" height="60" viewBox="0 0 1300 60">
+                <!-- Left Wire (Task 1 to Center) -->
+                <path d="M 310,0 L 310,30 L 648,30 L 648,60" fill="none" stroke="#0b69b2" stroke-width="3"
+                    stroke-dasharray="6 6" stroke-linejoin="round" />
+                <!-- Right Wire (Task 2 to Center) -->
+                <path d="M 990,0 L 990,30 L 652,30 L 652,60" fill="none" stroke="#1e873b" stroke-width="3"
+                    stroke-dasharray="6 6" stroke-linejoin="round" />
+                <!-- Center Drop Down to Shared Infra -->
+                <line x1="650" y1="30" x2="650" y2="60" stroke="#4a5568" stroke-width="4" />
+            </svg>
+        </div>
+
+        <!-- SHARED INFRASTRUCTURE -->
+        <div class="shared-infra">
+            <div class="shared-header">SHARED INFRASTRUCTURE</div>
+            <div class="shared-grid">
+
+                <div class="shared-item">
+                    <i class="fa-brands fa-envira"
+                        style="color: #4ade80; text-shadow: 0 0 15px rgba(74, 222, 128, 0.6);"></i>
+                    <div class="step-text">
+                        <h3>MongoDB (NoSQL Database)</h3>
+                        <p>Shared Document Store across both pipelines</p>
+                    </div>
+                </div>
+
+                <div class="shared-item">
+                    <i class="fa-brands fa-python"
+                        style="color: #60a5fa; text-shadow: 0 0 15px rgba(96, 165, 250, 0.6);"></i>
+                    <div class="step-text">
+                        <h3>Flask REST API (Backend)</h3>
+                        <p>Serves Search & Clustering Endpoints asynchronously</p>
+                    </div>
+                </div>
+
+                <div class="shared-item">
+                    <i class="fa-brands fa-js"
+                        style="color: #fde047; text-shadow: 0 0 15px rgba(253, 224, 71, 0.6);"></i>
+                    <div class="step-text">
+                        <h3>Vanilla JS & HTML (Frontend)</h3>
+                        <p>Unified Two-Tab Web Application Interface</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

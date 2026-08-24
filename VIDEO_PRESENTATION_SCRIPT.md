@@ -1,6 +1,6 @@
 # Information Retrieval Coursework - 10-Minute Video Presentation Script
 
-**Student:** Rohit Jha  
+**Student:** Rohit Jha (Coventry ID: 11782276)
 **Program:** MSc in Data Science & Computational Intelligence (Batch 8)  
 **College:** Softwarica College  
 **Course:** Information Retrieval  
@@ -10,7 +10,7 @@
 ## 🎬 Section 1: Introduction & Architecture (0:00 - 1:30)
 **[Camera: On Speaker]**
 
-"Hello everyone. My name is Rohit Jha, and I am from MSc Batch 8 of the MSc in Data Science & Computational Intelligence program at Softwarica College. 
+"Hello everyone. My name is Rohit Jha, and my Coventry University ID is 11782276. I am from MSc Batch 8 of the MSc in Data Science & Computational Intelligence program at Softwarica College. 
 
 Today, I will be presenting my coursework for the Information Retrieval module. This assignment challenged us to build two core IR systems: 
 1. **Task 1:** A Vertical Search Engine to crawl and search academic publications.

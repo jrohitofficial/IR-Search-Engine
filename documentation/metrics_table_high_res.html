@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Evaluation Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            background-color: #0b0f19;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .table-container {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 800;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .report-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .report-table td {
+            padding: 16px 10px;
+            font-size: 15px;
+        }
+
+        .report-table td:first-child {
+            color: #94a3b8;
+            font-weight: 400;
+            width: 65%;
+        }
+
+        .report-table td:last-child {
+            color: #f8fafc;
+            font-weight: 600;
+            text-align: left;
+            width: 35%;
+        }
+
+        /* Highlight specific rows */
+        .highlight td:last-child {
+            color: #10b981; /* Neon green */
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+            font-weight: 800;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="table-container">
+        <h2>Task 2 — K-Means Model Evaluation Report</h2>
+        <table class="report-table">
+            <tbody>
+                <tr>
+                    <td>Documents / vocabulary terms</td>
+                    <td>540 / 290</td>
+                </tr>
+                <tr>
+                    <td>Number of clusters (K)</td>
+                    <td>3</td>
+                </tr>
+                <tr class="highlight">
+                    <td>Accuracy (vs known labels)</td>
+                    <td>93.0%</td>
+                </tr>
+                <tr>
+                    <td>Precision (macro avg)</td>
+                    <td>0.9333</td>
+                </tr>
+                <tr>
+                    <td>Recall (macro avg)</td>
+                    <td>0.9296</td>
+                </tr>
+                <tr class="highlight">
+                    <td>F1 Score (macro avg)</td>
+                    <td>0.9296</td>
+                </tr>
+                <tr>
+                    <td>Silhouette Score</td>
+                    <td>0.0604</td>
+                </tr>
+                <tr>
+                    <td>Inertia</td>
+                    <td>431.15</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
