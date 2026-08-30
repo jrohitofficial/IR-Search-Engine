@@ -30,6 +30,78 @@ Sections requiring the student's own critical analysis are clearly marked
 
 ## Project overview
 
+### System Architecture
+
+```mermaid
+graph TD
+    subgraph Users
+        U[User / Browser]
+    end
+
+    subgraph Frontend [Unified Frontend (Port 5003)]
+        UI[Web Interface]
+    end
+
+    subgraph Backend_Services [Backend Services]
+        subgraph Task1 [Task 1: Vertical Search (Port 5001)]
+            T1_API[REST API]
+            T1_Rank[TF-IDF Vector Space Model]
+            T1_Sched[Crawl Scheduler]
+            T1_Crawl[Web Crawler]
+        end
+
+        subgraph Task2 [Task 2: Document Clustering (Port 5002)]
+            T2_API[REST API]
+            T2_Preproc[Text Preprocessing Pipeline]
+            T2_Model[K-Means Clustering Model K=3]
+        end
+    end
+
+    subgraph Data_Storage [Data Storage]
+        DB[(MongoDB Atlas)]
+    end
+
+    subgraph External_Sources [External Sources]
+        PurePortal[Coventry PurePortal]
+        Dataset[BBC News Dataset]
+    end
+
+    %% User Interactions
+    U -->|Access UI| UI
+    
+    %% Frontend to Backend
+    UI -->|Search Queries / GET| T1_API
+    UI -->|Text Classification / POST| T2_API
+
+    %% Task 1 Internal & External Flow
+    T1_API <--> T1_Rank
+    T1_Sched -->|Triggers| T1_Crawl
+    T1_Crawl -->|Crawls/Scrapes| PurePortal
+    T1_Crawl -->|Stores Docs & Profiles| DB
+    T1_Rank -->|Reads Indexed Data| DB
+
+    %% Task 2 Internal & External Flow
+    T2_API --> T2_Preproc
+    T2_Preproc --> T2_Model
+    T2_API -->|Saves Predictions| DB
+    T2_Model -->|Reads Corpus Stats| DB
+    Dataset -->|Offline Training| T2_Model
+
+    classDef frontend fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#155724;
+    classDef backend1 fill:#cce5ff,stroke:#007bff,stroke-width:2px,color:#004085;
+    classDef backend2 fill:#e2e3e5,stroke:#6c757d,stroke-width:2px,color:#383d41;
+    classDef storage fill:#fff3cd,stroke:#ffc107,stroke-width:2px,color:#856404;
+    classDef external fill:#f8d7da,stroke:#dc3545,stroke-width:2px,color:#721c24;
+
+    class UI frontend;
+    class T1_API,T1_Rank,T1_Sched,T1_Crawl backend1;
+    class T2_API,T2_Preproc,T2_Model backend2;
+    class DB storage;
+    class PurePortal,Dataset external;
+```
+
+### Directory Structure
+
 ```
 IR_COURSEWORK/
 ├── task1_vertical_search/
