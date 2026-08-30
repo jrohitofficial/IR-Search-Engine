@@ -31,6 +31,10 @@ This repository contains two working systems built for the **ST7071CEM Informati
 
 > **Scope Note:** This project targets the *official* coursework brief (`ST7071CEM_InformationRetrieval_Coursework.pdf`). A full evidence pack (real code listings, screenshots, training output, and APA 7 references) is available in [`documentation/final_documentation.docx`](documentation/final_documentation.docx). Sections requiring the student's own critical analysis are marked **"AUTHOR ANALYSIS REQUIRED"**.
 
+## 💡 Conceptual Diagram
+
+![Conceptual Diagram](https://github.com/jrohitofficial/IR-Search-Engine/raw/master/documentation/Conceptual%20Diagram.png)
+
 ---
 
 ## 🏗️ System Architecture
