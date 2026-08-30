@@ -1,15 +1,13 @@
 <div align="center">
-  <img src="assets/readme_banner.jpg" alt="Information Retrieval System Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
-
   <h1>🔍 Information Retrieval System</h1>
   <p><b>ST7071CEM Coursework — Coventry University & Softwarica</b></p>
 
   <!-- Badges -->
   <p>
-    <img src="https://img.shields.io/badge/Python-3.11+-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python Version" />
-    <img src="https://img.shields.io/badge/Flask-Web%20Framework-black?style=for-the-badge&logo=flask&logoColor=white" alt="Flask" />
-    <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248.svg?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB Atlas" />
-    <img src="https://img.shields.io/badge/Scikit--Learn-Machine%20Learning-F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn" />
+    <img src="https://img.shields.io/badge/Python-3.11+-blue.svg?logo=python&logoColor=white" alt="Python Version" />
+    <img src="https://img.shields.io/badge/Flask-Web%20Framework-black?logo=flask&logoColor=white" alt="Flask" />
+    <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248.svg?logo=mongodb&logoColor=white" alt="MongoDB Atlas" />
+    <img src="https://img.shields.io/badge/Scikit--Learn-Machine%20Learning-F7931E.svg?logo=scikit-learn&logoColor=white" alt="Scikit-Learn" />
   </p>
 
   <p>
@@ -20,7 +18,7 @@
   </p>
 </div>
 
-<br/>
+---
 
 ## 📖 About The Project
 
@@ -31,10 +29,9 @@ This repository contains two working systems built for the **ST7071CEM Informati
 *   **Task 1 — Vertical Search Engine:** Crawls Coventry University's PurePortal for the *Centre for Healthcare and Community Transformation*. It indexes research outputs using a **TF-IDF Vector Space Model** and serves ranked, paginated results featuring clickable links to original publications and author profiles.
 *   **Task 2 — Document Clustering:** Clusters a 540-document *Economics / Entertainment / Politics* corpus using **K-Means (K=3)**. It classifies new user-submitted text against the trained model in real-time, storing all predictions in MongoDB.
 
-> [!NOTE]  
 > **Scope Note:** This project targets the *official* coursework brief (`ST7071CEM_InformationRetrieval_Coursework.pdf`). A full evidence pack (real code listings, screenshots, training output, and APA 7 references) is available in [`documentation/final_documentation.docx`](documentation/final_documentation.docx). Sections requiring the student's own critical analysis are marked **"AUTHOR ANALYSIS REQUIRED"**.
 
-<br/>
+---
 
 ## 🏗️ System Architecture
 
@@ -123,7 +120,7 @@ IR_COURSEWORK/
 ```
 </details>
 
-<br/>
+---
 
 ## 🚀 Getting Started
 
@@ -145,8 +142,7 @@ pip install -r task1_vertical_search\backend\requirements.txt
 pip install -r task2_document_clustering\backend\requirements.txt
 ```
 
-> [!TIP]
-> The two requirement files overlap. Installing both into the same virtual environment is the simplest option and was used to build and test this project.
+> **Note:** The two requirement files overlap. Installing both into the same virtual environment is the simplest option and was used to build and test this project.
 
 ### Configuration
 
@@ -156,9 +152,7 @@ Copy `.env.example` to `.env` in the project root and fill in your real connecti
 MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-host>/?retryWrites=true&w=majority
 DATABASE_NAME=ir_coursework
 ```
-
-> [!WARNING]
-> Both backends read this same `.env` file from the project root. **Never commit the real `.env` file!**
+*(Both backends read this same `.env` file from the project root. Never commit the real `.env` file.)*
 
 <details>
 <summary><b>🛠️ Environment Variables Reference</b></summary>
@@ -173,7 +167,7 @@ DATABASE_NAME=ir_coursework
 
 </details>
 
-<br/>
+---
 
 ## 💻 Running The Application
 
@@ -185,12 +179,11 @@ The application consists of three separate services that need to run simultaneou
 | **2** | Task 2 Backend | `cd task2_document_clustering\backend`<br>`python run.py` | `:5002` |
 | **3** | Unified Frontend | `cd unified_frontend`<br>`python app.py` | `:5003` |
 
-> [!IMPORTANT]
-> **Note for Task 2:** If you haven't trained the dataset yet, run `python build_dataset.py` and `python train_model.py` in `task2_document_clustering/scripts` first.
+> ⚠️ **Note for Task 2:** If you haven't trained the dataset yet, run `python build_dataset.py` and `python train_model.py` in `task2_document_clustering/scripts` first.
 
 Once all three services are running, open your web browser and navigate to **http://localhost:5003**.
 
-<br/>
+---
 
 ## 🔍 Task 1 — Vertical Search Engine
 
@@ -223,7 +216,7 @@ cd task1_vertical_search\backend
 pytest -v
 ```
 
-<br/>
+---
 
 ## 🧠 Task 2 — Document Clustering
 
@@ -256,7 +249,7 @@ cd task2_document_clustering\backend
 pytest -v
 ```
 
-<br/>
+---
 
 ## 🧪 Testing Dataset Triggers
 
@@ -268,15 +261,10 @@ Below are quick text snippets you can copy-paste into the classifier to test the
 | 📈 **Economics** | `bank`, `market`, `price`, `economic`, `growth`, `company`, `shares`, `sales` | *"The central bank increased interest rates to control market prices and boost economic growth. The company reported record sales."* |
 | 🎬 **Entertainment** | `film`, `oscar`, `director`, `actor`, `band`, `song`, `tv`, `music`, `album` | *"The new film won the Oscar for best director and best actor. The famous band performed their new song live on TV."* |
 
-<br/>
+---
 
 ## 🆘 Troubleshooting
 
-> [!CAUTION]
-> **`robots.txt disallows crawling` for a URL that should be allowed:** Make sure you're using the fixed `crawler/robots_check.py`, which fetches `robots.txt` with a browser User-Agent. Python's `RobotFileParser.read()` uses no custom headers and gets a 403 from Cloudflare.
-
-> [!NOTE]
-> **MongoDB connection timeout:** Check `MONGODB_URI` in `.env` and ensure your current IP is allow-listed in Atlas's Network Access settings.
-
-> [!NOTE]
-> **Task 2 `/api/classify` returns 503:** The model hasn't been trained yet; run `scripts/train_model.py`.
+*   **`robots.txt disallows crawling` for a URL that should be allowed:** Make sure you're using the fixed `crawler/robots_check.py`, which fetches `robots.txt` with a browser User-Agent. Python's `RobotFileParser.read()` uses no custom headers and gets a 403 from Cloudflare.
+*   **MongoDB connection timeout:** Check `MONGODB_URI` in `.env` and ensure your current IP is allow-listed in Atlas's Network Access settings.
+*   **Task 2 `/api/classify` returns 503:** The model hasn't been trained yet; run `scripts/train_model.py`.
