@@ -33,71 +33,70 @@ Sections requiring the student's own critical analysis are clearly marked
 ### System Architecture
 
 ```mermaid
-graph TD
-    subgraph Users
-        U[User / Browser]
-    end
-
-    subgraph Frontend [Unified Frontend (Port 5003)]
-        UI[Web Interface]
-    end
-
-    subgraph Backend_Services [Backend Services]
-        subgraph Task1 [Task 1: Vertical Search (Port 5001)]
-            T1_API[REST API]
-            T1_Rank[TF-IDF Vector Space Model]
-            T1_Sched[Crawl Scheduler]
-            T1_Crawl[Web Crawler]
-        end
-
-        subgraph Task2 [Task 2: Document Clustering (Port 5002)]
-            T2_API[REST API]
-            T2_Preproc[Text Preprocessing Pipeline]
-            T2_Model[K-Means Clustering Model K=3]
-        end
-    end
-
-    subgraph Data_Storage [Data Storage]
-        DB[(MongoDB Atlas)]
-    end
-
-    subgraph External_Sources [External Sources]
-        PurePortal[Coventry PurePortal]
-        Dataset[BBC News Dataset]
-    end
-
-    %% User Interactions
-    U -->|Access UI| UI
+flowchart TB
+    %% Styling
+    classDef client fill:#2D3748,stroke:#4A5568,stroke-width:2px,color:#FFFFFF,rx:8,ry:8
+    classDef frontend fill:#3182CE,stroke:#2B6CB0,stroke-width:2px,color:#FFFFFF,rx:8,ry:8
+    classDef backend1 fill:#38A169,stroke:#2F855A,stroke-width:2px,color:#FFFFFF,rx:8,ry:8
+    classDef backend2 fill:#805AD5,stroke:#6B46C1,stroke-width:2px,color:#FFFFFF,rx:8,ry:8
+    classDef db fill:#DD6B20,stroke:#C05621,stroke-width:2px,color:#FFFFFF
+    classDef external fill:#718096,stroke:#4A5568,stroke-width:2px,color:#FFFFFF,rx:8,ry:8
     
-    %% Frontend to Backend
-    UI -->|Search Queries / GET| T1_API
-    UI -->|Text Classification / POST| T2_API
-
-    %% Task 1 Internal & External Flow
-    T1_API <--> T1_Rank
-    T1_Sched -->|Triggers| T1_Crawl
-    T1_Crawl -->|Crawls/Scrapes| PurePortal
-    T1_Crawl -->|Stores Docs & Profiles| DB
-    T1_Rank -->|Reads Indexed Data| DB
-
-    %% Task 2 Internal & External Flow
-    T2_API --> T2_Preproc
-    T2_Preproc --> T2_Model
-    T2_API -->|Saves Predictions| DB
-    T2_Model -->|Reads Corpus Stats| DB
-    Dataset -->|Offline Training| T2_Model
-
-    classDef frontend fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#155724;
-    classDef backend1 fill:#cce5ff,stroke:#007bff,stroke-width:2px,color:#004085;
-    classDef backend2 fill:#e2e3e5,stroke:#6c757d,stroke-width:2px,color:#383d41;
-    classDef storage fill:#fff3cd,stroke:#ffc107,stroke-width:2px,color:#856404;
-    classDef external fill:#f8d7da,stroke:#dc3545,stroke-width:2px,color:#721c24;
-
-    class UI frontend;
-    class T1_API,T1_Rank,T1_Sched,T1_Crawl backend1;
-    class T2_API,T2_Preproc,T2_Model backend2;
-    class DB storage;
-    class PurePortal,Dataset external;
+    %% User Tier
+    User((fa:fa-user User)):::client
+    
+    %% Presentation Tier
+    subgraph Presentation_Tier ["🌐 Presentation Tier"]
+        UI["fa:fa-desktop Unified Frontend<br/>(Flask / Port 5003)<br/><i>Unified UI for Search & Clustering</i>"]:::frontend
+    end
+    
+    %% Application Tier
+    subgraph Application_Tier ["⚙️ Application Tier (Microservices)"]
+        direction LR
+        subgraph Task1 ["🔍 Task 1: Vertical Search Engine (Port 5001)"]
+            T1_API["fa:fa-exchange-alt REST API<br/><i>/api/search, /api/crawler</i>"]:::backend1
+            T1_Rank["fa:fa-sort-numeric-down TF-IDF Model<br/><i>Scikit-learn Vectorizer</i>"]:::backend1
+            T1_Sched["fa:fa-clock APScheduler<br/><i>Periodic Crawl Jobs</i>"]:::backend1
+            T1_Crawl["fa:fa-spider Web Crawler<br/><i>Breadth-First Search</i>"]:::backend1
+            
+            T1_API <-->|Query & Rank| T1_Rank
+            T1_Sched -->|Trigger| T1_Crawl
+        end
+        
+        subgraph Task2 ["🧠 Task 2: Document Clustering (Port 5002)"]
+            T2_API["fa:fa-exchange-alt REST API<br/><i>/api/classify, /api/model</i>"]:::backend2
+            T2_Preproc["fa:fa-filter Text Preprocessing<br/><i>Stemming, Stop-words</i>"]:::backend2
+            T2_Model["fa:fa-project-diagram K-Means Model (K=3)<br/><i>Joblib Persisted Model</i>"]:::backend2
+            
+            T2_API -->|Clean Text| T2_Preproc
+            T2_Preproc -->|Classify| T2_Model
+        end
+    end
+    
+    %% Data Tier
+    subgraph Data_Tier ["💾 Data Tier"]
+        DB[("fa:fa-database MongoDB Atlas<br/><i>Cloud NoSQL Database</i>")]:::db
+    end
+    
+    %% External Sources
+    subgraph External_Systems ["🌍 External Systems"]
+        PurePortal["fa:fa-university Coventry PurePortal<br/><i>Seed URL & Profiles</i>"]:::external
+        BBCDataset["fa:fa-file-alt BBC News Dataset<br/><i>Pre-downloaded Corpus</i>"]:::external
+    end
+    
+    %% Connections
+    User == "Accesses Web UI" ==> UI
+    
+    UI == "HTTP GET (Search)" ==> T1_API
+    UI == "HTTP POST (Classify)" ==> T2_API
+    
+    T1_Crawl -. "Scrapes (Politeness respected)" .-> PurePortal
+    T1_Crawl == "Stores Indexed Docs" ==> DB
+    T1_Rank == "Reads Corpus for Ranking" ==> DB
+    
+    T2_Model -. "Offline Training" .-> BBCDataset
+    T2_API == "Saves Prediction History" ==> DB
+    T2_Model == "Reads Dataset Stats" ==> DB
 ```
 
 ### Directory Structure
